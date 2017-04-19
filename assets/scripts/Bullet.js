@@ -23,6 +23,7 @@ Bullet.prototype.stdReset = function(x, y) {
 Bullet.prototype.Spawn = function(x, y, data) {
     // Shoot it in the right direction
     this.stdReset(x, y);
+    this.scale.setTo(data.power);
     this.speed = data.speed;
     this.rotation = data.rotation;
     this.x = x;
