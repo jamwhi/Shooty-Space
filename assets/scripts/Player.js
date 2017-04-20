@@ -8,30 +8,36 @@ function Player(game, x, y) {
 
     // Setup physics
     this.game.physics.arcade.enable(this);
-    this.body.drag.setTo(300);
-    this.body.bounce.setTo(0.6);
+    //this.body.drag.setTo(300, 300);
+    
+    this.body.bounce.setTo(2, 2);
     //this.body.worldBounce = new Phaser.Point(2, 2);
     this.body.collideWorldBounds = true;
     this.body.onWorldBounds = new Phaser.Signal() 
     this.body.onWorldBounds.add(hitWorldBounds, this);
 
     // Setup variables
+    this.drag = 0.93;
     this.mouseFired = false;
     this.canFire = true;
     this.chargingShot = false;
     this.currentChargeShotTime = 0;
     this.minChargeShotTime = 0.2;
     this.maxChargeShotTime = 0.6;
+    this.chargeShotPercent = 0;
+    this.chargeShotExponential = 0;
     this.fireRate = 300;
-    this.recoil = -120;
+    this.recoil = -840;
     this.bulletSpeed = 1200;
     this.bulletHeadStart = 20;
     this.timeToPowerUp = 1;
-    this.bounceMultiplier = 2;
-    this.minBounceSpeed = 350;
+    this.minBounceSpeed = 800;
     this.chargeGraphic = game.add.sprite(0, 0, 'bullet');
     this.chargeGraphic.anchor.setTo(0.5);
     this.chargeGraphic.visible = false;
+
+    this.moveAccel = 2.5;
+    this.maxMoveSpeed = 100;
     
     //this.animations.add('left', [0, 1, 2, 3], 10, true);
     //this.animations.add('right', [5, 6, 7, 8], 10, true);
@@ -45,6 +51,8 @@ function Player(game, x, y) {
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
+
+
 Player.prototype.update = function() {
     var hitPlatform = game.physics.arcade.collide(this, platforms);
 
@@ -53,13 +61,39 @@ Player.prototype.update = function() {
     this.CheckMouseInput();
 
     if (this.chargingShot) {
-        var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
-        var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
-        this.chargeGraphic.x = x;
-        this.chargeGraphic.y = y;
-        this.currentChargeShotTime += 0.01;
-        this.currentChargeShotTime = Math.min(this.currentChargeShotTime, this.maxChargeShotTime);
-        this.chargeGraphic.scale.setTo(this.currentChargeShotTime);
+        this.KeepChargingShot();
+    }
+
+    this.ApplyDrag();
+}
+
+Player.prototype.KeepChargingShot = function() {
+    // Move forwards slightly
+    this.body.velocity.x += Math.cos(this.rotation) * this.moveAccel;
+    this.body.velocity.y += Math.sin(this.rotation) * this.moveAccel;
+
+
+    var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
+    var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
+    this.chargeGraphic.x = x;
+    this.chargeGraphic.y = y;
+    this.currentChargeShotTime += 0.01;
+    this.currentChargeShotTime = Math.min(this.currentChargeShotTime, this.maxChargeShotTime);
+    //this.chargeShotPercent = (this.currentChargeShotTime - this.minChargeShotTime) / (this.maxChargeShotTime - this.minChargeShotTime);
+    this.chargeShotPercent = this.currentChargeShotTime / this.maxChargeShotTime;
+    this.chargeShotExponential = this.chargeShotPercent * this.chargeShotPercent
+    this.chargeGraphic.scale.setTo(this.chargeShotExponential);
+}
+
+Player.prototype.ApplyDrag = function() {
+    var m = this.body.velocity.getMagnitude();
+
+    if (this.chargingShot && m < this.maxMoveSpeed) {
+        // ignore drag
+    } else if (m > 0.1) {
+        this.body.velocity.setMagnitude(m * this.drag);
+    } else {
+        this.body.velocity.setTo(0);
     }
 }
 
@@ -112,7 +146,9 @@ Player.prototype.StartCharge = function() {
     this.chargeGraphic.y = y;
     this.chargeGraphic.visible = true;
     this.chargeGraphic.scale.setTo(0.01);
-    this.currentChargeShotTime = 0.01;
+    this.currentChargeShotTime = 0;
+    this.chargeShotPercent = 0;
+    this.chargeShotExponential = 0;
 }
 
 Player.prototype.Fire = function() {
@@ -123,11 +159,13 @@ Player.prototype.Fire = function() {
     {
         var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
         var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
-        bulletPool.create(x, y, {speed: this.bulletSpeed, power: this.currentChargeShotTime, rotation: this.rotation});
 
-        // propel backwards
-        this.body.velocity.x += Math.cos(this.rotation) * this.recoil;
-        this.body.velocity.y += Math.sin(this.rotation) * this.recoil;
+        bulletPool.create(x, y, {speed: this.bulletSpeed, power: this.chargeShotExponential, rotation: this.rotation});
+        
+        // Propel backwards
+        var chargeRecoil = this.recoil * this.chargeShotExponential;
+        this.body.velocity.x += Math.cos(this.rotation) * chargeRecoil;
+        this.body.velocity.y += Math.sin(this.rotation) * chargeRecoil;
     }
 
     this.currentChargeShotTime = 0;

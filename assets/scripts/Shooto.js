@@ -104,4 +104,6 @@ function render() {
     game.debug.text("stars: " + starPool.children.length, 100, 400 );
     game.debug.text("fps: " + this.game.time.fps, 100, 360);
     */
+
+    game.debug.text("Charge: " + player.chargeShotExponential, 100, 80);
 }

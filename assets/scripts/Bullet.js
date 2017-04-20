@@ -7,6 +7,11 @@ function Bullet (game) {
     this.exists = false;
     this.alive = false;
 
+    //this.minSize = 0.2;
+    this.maxSize = 1;
+
+    this.power = 1;
+
     this.anchor.setTo(0.5);
     this.scale.setTo(0.4);
     this.game.physics.arcade.enable(this);
@@ -23,7 +28,8 @@ Bullet.prototype.stdReset = function(x, y) {
 Bullet.prototype.Spawn = function(x, y, data) {
     // Shoot it in the right direction
     this.stdReset(x, y);
-    this.scale.setTo(data.power);
+    this.power = data.power
+    this.scale.setTo(this.power * this.maxSize);
     this.speed = data.speed;
     this.rotation = data.rotation;
     this.x = x;
@@ -54,7 +60,12 @@ Bullet.prototype.Explode = function(bullet, platform) {
 
 Bullet.prototype.HitStar = function(bullet, star) {
     star.Explode();
-    this.Explode();
+    if (this.power >= 1) {
+
+    } else {
+        this.Explode();
+    }
+    
 
     score += 1;
     scoreText.text = 'Score: ' + score;
