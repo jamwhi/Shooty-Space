@@ -1,6 +1,5 @@
 
 
-
 function Star (game) {
     Phaser.Sprite.call(this, game, 0, 0, 'star');
     this.game = game;
@@ -45,5 +44,19 @@ Star.prototype.CheckBounds = function() {
 }
 
 Star.prototype.Explode = function(bullet, platform) {
+
+    emitter = game.add.emitter(this.x, this.y, 10);
+    emitter.makeParticles('dot');
+    emitter.gravity = 0;
+    emitter.x = this.x;
+    emitter.y = this.y;
+    
+    emitter.width = 20;
+    emitter.height = 20;
+    emitter.setAlpha(0.8, 1, 3000);
+    emitter.setScale(1, 0.1, 1, 0.1, 2000, Phaser.Easing.Quadratic.Out);
+
+    emitter.start(true, 2000, null, 10);
+
     this.kill();
 }

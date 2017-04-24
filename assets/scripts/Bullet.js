@@ -1,6 +1,5 @@
 
 
-
 function Bullet (game) {
     Phaser.Sprite.call(this, game, 0, 0, 'bullet');
     this.game = game;

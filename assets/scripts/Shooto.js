@@ -1,10 +1,10 @@
 
 
-
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
 var platforms;
 var bulletPool;
+var beamPool;
 var cursors;
 var starPool;
 var score = 0;
@@ -20,7 +20,8 @@ function preload() {
 
     game.load.image('ship', 'assets/images/shipsmall.png');
     game.load.image('bullet', 'assets/images/bullet.png');
-
+    game.load.image('beam', 'assets/images/beam.png');
+    game.load.image('dot', 'assets/images/dot.png');
 }
 
 function create() {
@@ -41,6 +42,10 @@ function create() {
     // bullets group
     bulletPool = new Pool(game, Bullet, 2, 'bullets');
     bulletPool.enableBody = true;
+
+    // beam group
+    beamPool = new Pool(game, Beam, 2, 'beams');
+    //beamPool.enableBody = true;
 
     SetupStars();
 
@@ -87,7 +92,7 @@ function SpawnStar() {
 function update() {
     // Collisions between stars and platforms
     //game.physics.arcade.collide(stars, platforms);
-    game.physics.arcade.overlap(player, starPool, HitStar, null, this);
+    //game.physics.arcade.overlap(player, starPool, HitStar, null, this);
 }
 
 function HitStar (player, star) {
@@ -98,6 +103,7 @@ function HitStar (player, star) {
     scoreText.text = 'Score: ' + score;
 }
 
+
 function render() {
     /*
     game.debug.text("bullets: " + bulletPool.children.length, 100, 380 );
@@ -106,4 +112,26 @@ function render() {
     */
 
     game.debug.text("Charge: " + player.chargeShotExponential, 100, 80);
+
+    //game.debug.geom(beamRay, 'rgba(255,0,0,1)' ) ;
+    //game.debug.text("physicsElapsed: " + this.game.time.physicsElapsed, 100, 60);
+    /*
+    starPool.forEachAlive(function(o) {
+        // Create an array of lines that represent the four edges of each wall
+        var lines = [
+            new Phaser.Line(o.x - o.width / 2, o.y - o.height / 2,
+                            o.x + o.width / 2, o.y - o.height / 2),
+            new Phaser.Line(o.x - o.width / 2, o.y - o.height / 2,
+                            o.x - o.width / 2, o.y + o.height / 2),
+            new Phaser.Line(o.x + o.width / 2, o.y - o.height / 2,
+                            o.x + o.width / 2, o.y + o.height / 2),
+            new Phaser.Line(o.x - o.width / 2, o.y + o.height / 2,
+                            o.x + o.width / 2, o.y + o.height / 2)
+        ];
+
+        lines.forEach(function(line) {
+            game.debug.geom(line, 'rgba(255,0,0,1)' ) ;
+        }, this);
+    }, this);
+    */
 }
