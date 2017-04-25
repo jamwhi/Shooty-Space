@@ -168,6 +168,7 @@ Player.prototype.Fire = function() {
     {
         var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
         var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
+
         beamPool.create(x, y, {direction: this.rotation, power: this.chargeShotExponential});
 
         // bulletPool.create(x, y, {speed: this.bulletSpeed, power: this.chargeShotExponential, rotation: this.rotation});
@@ -181,4 +182,5 @@ Player.prototype.Fire = function() {
 
     this.reload = this.fireRate;
     this.currentChargeShotTime = 0;
+    this.chargeShotExponential = 0;
 }

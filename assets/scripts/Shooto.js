@@ -9,7 +9,7 @@ var cursors;
 var starPool;
 var score = 0;
 var scoreText;
-
+var player;
 
 function preload() {
     
@@ -29,6 +29,7 @@ function create() {
     this.game.time.advancedTiming = true;
     // enable Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.arcade.gravity.y = 0;
 
     // Background
     //game.add.sprite(0, 0, 'sky');
@@ -44,7 +45,7 @@ function create() {
     bulletPool.enableBody = true;
 
     // beam group
-    beamPool = new Pool(game, Beam, 2, 'beams');
+    beamPool = new Pool(game, Beam, 10, 'beams');
     //beamPool.enableBody = true;
 
     SetupStars();
@@ -83,10 +84,11 @@ function SetupStars() {
     starPool.enableBody = true;
 
     game.time.events.loop(400, SpawnStar, this);
+    //SpawnStar();
 }
 
 function SpawnStar() {
-    var star = starPool.create(800, Math.random() * 600, 300);
+    starPool.create(800, Math.random() * 600, 200);
 }
 
 function update() {
@@ -103,7 +105,6 @@ function HitStar (player, star) {
     scoreText.text = 'Score: ' + score;
 }
 
-
 function render() {
     /*
     game.debug.text("bullets: " + bulletPool.children.length, 100, 380 );
@@ -113,6 +114,11 @@ function render() {
 
     game.debug.text("Charge: " + player.chargeShotExponential, 100, 80);
 
+
+    //game.debug.geom(closePoint, 'rgba(255,0,0,1)');
+    //somelines.forEach(function(line) {
+    //        game.debug.geom(line, 'rgba(255,0,0,1)' ) ;
+    //}, this);
     //game.debug.geom(beamRay, 'rgba(255,0,0,1)' ) ;
     //game.debug.text("physicsElapsed: " + this.game.time.physicsElapsed, 100, 60);
     /*
@@ -134,4 +140,9 @@ function render() {
         }, this);
     }, this);
     */
+
+    /*starPool.forEachAlive(function(o) {
+        var circle = new Phaser.Circle(o.x, o.y, (o.radius + player.chargeShotExponential * 30) *2 );
+        game.debug.geom(circle, '#cfffff', false);
+    }, this);*/
 }
