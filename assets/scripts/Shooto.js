@@ -7,6 +7,7 @@ var bulletPool;
 var beamPool;
 var cursors;
 var starPool;
+var squarePool;
 var score = 0;
 var scoreText;
 var player;
@@ -22,7 +23,7 @@ function preload() {
     game.load.image('bullet', 'assets/images/bullet.png');
     game.load.image('beam', 'assets/images/beam.png');
     game.load.image('dot', 'assets/images/dot.png');
-    game.load.image('square', 'assets/images/dot.png');
+    game.load.image('square', 'assets/images/redsquare.png');
 }
 
 function create() {
@@ -48,8 +49,10 @@ function create() {
     // beam group
     beamPool = new Pool(game, Beam, 3, 'beams');
     //beamPool.enableBody = true;
-    
+
     SetupStars();
+
+    SetupSquares();
 
     // Set up score text
     scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
@@ -82,7 +85,7 @@ function SetupPlatforms() {
 }
 
 function SetupStars() {
-     // Create 12 stars evenly spaced apart
+
     starPool = new Pool(game, Star, 10, 'stars');
     starPool.enableBody = true;
 
@@ -90,19 +93,32 @@ function SetupStars() {
     //SpawnStar();
 }
 
+function SetupSquares() {
+    
+    squarePool = new Pool(game, Square, 5, 'squares');
+    squarePool.enableBody = true;
+
+    game.time.events.loop(3000, SpawnSquare, this);
+}
+
 function SpawnStar() {
     starPool.create(800, Math.random() * 600, 200);
+}
+
+function SpawnSquare() {
+    squarePool.create(800, Math.random() * 600, 200);
 }
 
 function update() {
     // Collisions between stars and platforms
     //game.physics.arcade.collide(stars, platforms);
-    game.physics.arcade.overlap(player, starPool, HitStar, null, this);
+    game.physics.arcade.overlap(player, starPool, HitEnemy, null, this);
+    game.physics.arcade.overlap(player, squarePool, HitEnemy, null, this);
 }
 
-function HitStar (player, star) {
-    star.Hit(100);
-    player.Hit(star.hitDamage);
+function HitEnemy (player, enemy) {
+    enemy.Hit(100);
+    player.Hit(enemy.hitDamage);
 }
 
 function render() {
@@ -114,7 +130,7 @@ function render() {
 
     game.debug.text("Charge: " + player.chargeShotExponential, 100, 80);
     game.debug.text("HP: " + player.health, 100, 100);
-
+    //game.debug.body(player);
 
     //game.debug.geom(closePoint, 'rgba(255,0,0,1)');
     //somelines.forEach(function(line) {

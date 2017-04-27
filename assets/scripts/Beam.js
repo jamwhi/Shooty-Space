@@ -1,5 +1,8 @@
 
 
+Beam.prototype = Object.create(Phaser.Sprite.prototype);
+Beam.prototype.constructor = Beam;
+
 function Beam (game) {
     this.game = game;
 
@@ -29,8 +32,6 @@ function Beam (game) {
     this.anchor.setTo(0, 0.5);
 }
 
-Beam.prototype = Object.create(Phaser.Sprite.prototype);
-Beam.prototype.constructor = Beam;
 
 Beam.prototype.stdReset = function(x, y) {
     this.reset(x, y);
@@ -75,7 +76,7 @@ Beam.prototype.update = function() {
 Beam.prototype.Fire = function() {
     var ray = new Phaser.Line(this.x, this.y, this.x2, this.y2);
     //var hits = this.RayHit(ray, starPool);
-    var hits = this.RayHitCircles(ray, starPool);
+    var hits = this.RayHitCircles(ray, [starPool, squarePool]);
 
     if (hits.length == 0) {
         return;
@@ -84,7 +85,7 @@ Beam.prototype.Fire = function() {
     if (this.power < 0.4) {
         var c = this.ClosestHit(hits);
         this.HitStar(c);
-        this.scale.x = c.position.distance(this) / this.pixelWidth;
+        this.scale.x = (c.position.distance(this) - c.radius) / this.pixelWidth;
     } else {
         hits.forEach(function(o) {
             this.HitStar(o);
@@ -158,15 +159,17 @@ Beam.prototype.RayHit = function(ray, hitGroup) {
     return hits;
 }
 
-Beam.prototype.RayHitCircles = function(ray, hitGroup) {
+Beam.prototype.RayHitCircles = function(ray, hitGroups) {
     var hits = [];
     
-    hitGroup.forEachAlive(function(o) {
-        var closestPoint = this.ClosestPointOnBeamToPoint(o, true);
-        if (closestPoint.distance(o) <= o.radius + this.beamWidth) {
-            hits.push(o);
-        }
-    }, this);
+    hitGroups.forEach(function(g) {
+        g.forEachAlive(function(o) {
+            var closestPoint = this.ClosestPointOnBeamToPoint(o, true);
+            if (closestPoint.distance(o) <= o.radius + this.beamWidth) {
+                hits.push(o);
+            }
+        }, this);
+    }, this)
 
     return hits;
 }

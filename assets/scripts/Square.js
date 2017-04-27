@@ -1,17 +1,17 @@
 
 
-Star.prototype = Object.create(Enemy.prototype);
-Star.prototype.constructor = Star;
+Square.prototype = Object.create(Enemy.prototype);
+Square.prototype.constructor = Square;
 
-function Star (game) {
-    Enemy.call(this, game, 'star');
+function Square (game) {
+    Enemy.call(this, game, 'square');
 
-    this.maxHealth = 100;
+    this.maxHealth = 200;
     this.health = this.maxHealth;
     this.hitDamage = 20;
 }
 
-Star.prototype.Spawn = function(x, y, data) {
+Square.prototype.Spawn = function(x, y, data) {
     Enemy.prototype.Spawn.call(this, x, y, data);
 
     this.speed = data;
@@ -22,18 +22,18 @@ Star.prototype.Spawn = function(x, y, data) {
     return this;
 }
 
-Star.prototype.update = function() {
+Square.prototype.update = function() {
     if (this.alive) {
         Enemy.prototype.update.call(this);
 
-        //game.physics.arcade.overlap(this, platforms, this.Explode, null, this);
-        //game.physics.arcade.overlap(this, stars, this.HitStar, null, this);
+        // move towards player
+
         this.rotation += this.rotSpeed * this.game.time.physicsElapsed;
         this.CheckBounds();
     }
 }
 
-Star.prototype.Explode = function(bullet, platform) {
+Square.prototype.Explode = function(bullet, platform) {
 
     emitter = game.add.emitter(this.x, this.y, 10);
     emitter.makeParticles('dot');

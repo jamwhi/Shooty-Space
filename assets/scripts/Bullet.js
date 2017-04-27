@@ -1,5 +1,8 @@
 
 
+Bullet.prototype = Object.create(Phaser.Sprite.prototype);
+Bullet.prototype.constructor = Bullet;
+
 function Bullet (game) {
     Phaser.Sprite.call(this, game, 0, 0, 'bullet');
     this.game = game;
@@ -17,8 +20,6 @@ function Bullet (game) {
     this.game.physics.arcade.enable(this);
 }
 
-Bullet.prototype = Object.create(Phaser.Sprite.prototype);
-Bullet.prototype.constructor = Bullet;
 
 Bullet.prototype.stdReset = function(x, y) {
     this.reset(x, y);

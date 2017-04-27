@@ -1,5 +1,8 @@
 
 
+Player.prototype = Object.create(Phaser.Sprite.prototype);
+Player.prototype.constructor = Player;
+
 function Player(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'ship');
     this.game = game;
@@ -14,6 +17,8 @@ function Player(game, x, y) {
     this.body.collideWorldBounds = true;
     this.body.onWorldBounds = new Phaser.Signal() 
     this.body.onWorldBounds.add(hitWorldBounds, this);
+    this.body.setA
+    this.body.setSize(20, 20, 10, 10);
 
     // Setup variables
     this.drag = 0.93;
@@ -48,10 +53,6 @@ function Player(game, x, y) {
 
     game.add.existing(this);
 };
-
-Player.prototype = Object.create(Phaser.Sprite.prototype);
-Player.prototype.constructor = Player;
-
 
 
 Player.prototype.update = function() {

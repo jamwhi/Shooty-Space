@@ -1,5 +1,7 @@
 
 
+Pool.prototype = Object.create(Phaser.Group.prototype);
+Pool.prototype.constructor = Pool;
 
 function Pool(game, spriteType, instances, name) {
     // Call super (Phaser.Group) from which the Pool is extended
@@ -17,8 +19,6 @@ function Pool(game, spriteType, instances, name) {
     }
 }
 
-Pool.prototype = Object.create(Phaser.Group.prototype);
-Pool.prototype.constructor = Pool;
 
 Pool.prototype.create = function(x, y, data) {
     // Find the first child that has a false exist property:
