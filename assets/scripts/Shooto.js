@@ -22,6 +22,7 @@ function preload() {
     game.load.image('bullet', 'assets/images/bullet.png');
     game.load.image('beam', 'assets/images/beam.png');
     game.load.image('dot', 'assets/images/dot.png');
+    game.load.image('square', 'assets/images/dot.png');
 }
 
 function create() {
@@ -30,7 +31,7 @@ function create() {
     // enable Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 0;
-
+    
     // Background
     //game.add.sprite(0, 0, 'sky');
     this.game.stage.backgroundColor = 0x333333
@@ -39,19 +40,21 @@ function create() {
     player = new Player(game, game.world.width / 2, game.world.height / 2);
     
     SetupPlatforms();
-
+    
     // bullets group
     bulletPool = new Pool(game, Bullet, 2, 'bullets');
     bulletPool.enableBody = true;
-
+    
     // beam group
-    beamPool = new Pool(game, Beam, 10, 'beams');
+    beamPool = new Pool(game, Beam, 3, 'beams');
     //beamPool.enableBody = true;
-
+    
     SetupStars();
 
     // Set up score text
     scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+
+    
 }
 
 function SetupPlatforms() {
@@ -94,15 +97,12 @@ function SpawnStar() {
 function update() {
     // Collisions between stars and platforms
     //game.physics.arcade.collide(stars, platforms);
-    //game.physics.arcade.overlap(player, starPool, HitStar, null, this);
+    game.physics.arcade.overlap(player, starPool, HitStar, null, this);
 }
 
 function HitStar (player, star) {
-    player.reset(game.world.width / 2, game.world.height / 2)
-
-    // Update score
-    score = 0;
-    scoreText.text = 'Score: ' + score;
+    star.Hit(100);
+    player.Hit(star.hitDamage);
 }
 
 function render() {
@@ -113,6 +113,7 @@ function render() {
     */
 
     game.debug.text("Charge: " + player.chargeShotExponential, 100, 80);
+    game.debug.text("HP: " + player.health, 100, 100);
 
 
     //game.debug.geom(closePoint, 'rgba(255,0,0,1)');

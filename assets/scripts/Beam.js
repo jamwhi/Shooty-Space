@@ -4,11 +4,12 @@ function Beam (game) {
     this.game = game;
 
     Phaser.Sprite.call(this, game, 0, 0, "beam");
-    
+
     this.exists = false;
     this.alive = false;
 
     //this.minSize = 0.2;
+    this.pixelWidth = 866; // This is the number of pixels in the texture itself. Must be changed based on imported texture
     this.maxSize = 10;
     this.size = this.maxSize;
     this.timeAlive = 0.5;
@@ -21,6 +22,10 @@ function Beam (game) {
     this.x2 = 0;
     this.y2 = 0;
 
+    this.minDamage = 50;
+    this.maxDamage = 200;
+    this.hitDamage = 50;
+
     this.anchor.setTo(0, 0.5);
 }
 
@@ -32,6 +37,7 @@ Beam.prototype.stdReset = function(x, y) {
     this.exists = true;
     this.alive = true;
     this.time = 0;
+    this.scale.setTo(1, 1);
 }
 
 Beam.prototype.Spawn = function(x, y, data) {
@@ -46,6 +52,7 @@ Beam.prototype.Spawn = function(x, y, data) {
 
     this.size = Math.max(0.5, this.power * this.maxSize);
     this.beamWidth = this.power * this.maxWidth;
+    this.hitDamage = this.minDamage + (this.maxDamage - this.minDamage) * this.power;
 
     this.alive = true;
     this.exists = true;
@@ -57,7 +64,7 @@ Beam.prototype.update = function() {
     if (this.alive) {
         this.time += this.game.time.physicsElapsed;
 
-        this.scale.setTo(1, (1 - (this.time / this.timeAlive)) * this.size);
+        this.scale.y = (1 - (this.time / this.timeAlive)) * this.size;
 
         if (this.time >= this.timeAlive) {
             this.kill();
@@ -70,11 +77,46 @@ Beam.prototype.Fire = function() {
     //var hits = this.RayHit(ray, starPool);
     var hits = this.RayHitCircles(ray, starPool);
 
-    hits.forEach(function(o) {
-        this.HitStar(o);
-    }, this)
+    if (hits.length == 0) {
+        return;
+    }
+
+    if (this.power < 0.4) {
+        var c = this.ClosestHit(hits);
+        this.HitStar(c);
+        this.scale.x = c.position.distance(this) / this.pixelWidth;
+    } else {
+        hits.forEach(function(o) {
+            this.HitStar(o);
+        }, this)
+    }
 
     //this.game.Physics.Arcade.isPaused = true;
+}
+
+
+Beam.prototype.ClosestHit = function(hits) {
+    var closest = hits[0];
+    
+    var closestD = hits[0].position.distance(this);
+    var first = true;
+
+    hits.forEach(function(hit) {
+        
+        if (first == true) {
+            first = false;
+        } else {
+            var d = hit.position.distance(this);
+            if (d < closestD) {
+                closestD = d;
+                closest = hit;
+            }
+        }
+
+        
+    }, this);
+
+    return closest;
 }
 
 // Given a ray and an array of objects to intersect with, 
@@ -130,15 +172,12 @@ Beam.prototype.RayHitCircles = function(ray, hitGroup) {
 }
 
 Beam.prototype.HitStar = function(star) {
-    star.Explode();
+    star.Hit(this.hitDamage);
     if (this.power >= 1) {
 
     } else {
         //this.Explode();
     }
-
-    score += 1;
-    scoreText.text = 'Score: ' + score;
 }
 
 Beam.prototype.ClosestPointOnBeamToPoint = function(P, clamp) {

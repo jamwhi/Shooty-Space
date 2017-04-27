@@ -38,6 +38,7 @@ function Player(game, x, y) {
 
     this.moveAccel = 2.5;
     this.maxMoveSpeed = 100;
+    this.health = 100;
     
     //this.animations.add('left', [0, 1, 2, 3], 10, true);
     //this.animations.add('right', [5, 6, 7, 8], 10, true);
@@ -183,4 +184,15 @@ Player.prototype.Fire = function() {
     this.reload = this.fireRate;
     this.currentChargeShotTime = 0;
     this.chargeShotExponential = 0;
+}
+
+Player.prototype.Hit = function(hitDamage) {
+    this.health -= hitDamage;
+    if (this.health <= 0) {
+        player.reset(game.world.width / 2, game.world.height / 2, 100)
+        
+        // Update score
+        score = 0;
+        scoreText.text = 'Score: ' + score;
+    }
 }

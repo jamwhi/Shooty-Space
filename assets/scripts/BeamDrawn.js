@@ -23,6 +23,7 @@ function Beam (game) {
     this.direction = 0;
 
     this.power = 1;
+    this.hitDamage = 50;
 
     this.x1 = 0;
     this.y1 = 0;
@@ -141,7 +142,7 @@ Beam.prototype.RayHit = function(ray, hitGroup) {
 }
 
 Beam.prototype.HitStar = function(star) {
-    star.Explode();
+    star.damage(this.hitDamage);
     if (this.power >= 1) {
 
     } else {

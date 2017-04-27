@@ -10,6 +10,7 @@ function Bullet (game) {
     this.maxSize = 1;
 
     this.power = 1;
+    this.hitDamage = 50;
 
     this.anchor.setTo(0.5);
     this.scale.setTo(0.4);
@@ -58,14 +59,10 @@ Bullet.prototype.Explode = function(bullet, platform) {
 }
 
 Bullet.prototype.HitStar = function(bullet, star) {
-    star.Explode();
+    star.Hit(this.hitDamage);
     if (this.power >= 1) {
 
     } else {
         this.Explode();
     }
-    
-
-    score += 1;
-    scoreText.text = 'Score: ' + score;
 }
