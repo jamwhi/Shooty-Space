@@ -35,7 +35,7 @@ Square.prototype.update = function() {
 
 Square.prototype.Explode = function(bullet, platform) {
 
-    emitter = game.add.emitter(this.x, this.y, 10);
+    var emitter = foreground.add(new Phaser.Particles.Arcade.Emitter(game, this.x, this.y, 10));
     emitter.makeParticles('dot');
     emitter.x = this.x;
     emitter.y = this.y;
@@ -48,7 +48,7 @@ Square.prototype.Explode = function(bullet, platform) {
         particle.body.allowGravity = false;
     }, this);
 
-    score += 1;
+    score += 4;
     scoreText.text = 'Score: ' + score;
 
     this.kill();

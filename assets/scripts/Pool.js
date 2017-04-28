@@ -3,9 +3,12 @@
 Pool.prototype = Object.create(Phaser.Group.prototype);
 Pool.prototype.constructor = Pool;
 
-function Pool(game, spriteType, instances, name) {
+function Pool(game, spriteType, instances, name, group) {
+    if (group == null) {
+        group = midground;
+    }
     // Call super (Phaser.Group) from which the Pool is extended
-    Phaser.Group.call(this, game, game.world, name);
+    Phaser.Group.call(this, game, group, name);
 
     this.game = game;
     this.spriteType = spriteType; // Needed when creating new objects in the pool

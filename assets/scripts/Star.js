@@ -6,6 +6,9 @@ Star.prototype.constructor = Star;
 function Star (game) {
     Enemy.call(this, game, 'star');
 
+    this.body.bounce.setTo(1, 1);
+    this.body.collideWorldBounds = true;
+
     this.maxHealth = 100;
     this.health = this.maxHealth;
     this.hitDamage = 20;
@@ -17,7 +20,8 @@ Star.prototype.Spawn = function(x, y, data) {
     this.speed = data;
     this.rotation = Math.random() * Phaser.Math.PI2;
     this.rotSpeed = Math.random() * 4 - 2;
-    this.body.velocity.x = -this.speed;
+    this.body.velocity.x = data.x;
+    this.body.velocity.y = data.y;
     
     return this;
 }
@@ -29,13 +33,13 @@ Star.prototype.update = function() {
         //game.physics.arcade.overlap(this, platforms, this.Explode, null, this);
         //game.physics.arcade.overlap(this, stars, this.HitStar, null, this);
         this.rotation += this.rotSpeed * this.game.time.physicsElapsed;
-        this.CheckBounds();
+        //this.CheckBounds();
     }
 }
 
 Star.prototype.Explode = function(bullet, platform) {
 
-    emitter = game.add.emitter(this.x, this.y, 10);
+    var emitter = foreground.add(new Phaser.Particles.Arcade.Emitter(game, this.x, this.y, 10));
     emitter.makeParticles('dot');
     emitter.x = this.x;
     emitter.y = this.y;

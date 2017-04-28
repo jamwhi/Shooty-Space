@@ -2,15 +2,25 @@
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
+// Object Pools
 var platforms;
 var bulletPool;
 var beamPool;
-var cursors;
 var starPool;
 var squarePool;
+var spawnerPool;
+
+var cursors;
 var score = 0;
 var scoreText;
+var energyBar;
+var hpBar;
 var player;
+
+var hud;
+var foreground;
+var midground;
+var background;
 
 function preload() {
     
@@ -20,105 +30,91 @@ function preload() {
     //game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
 
     game.load.image('ship', 'assets/images/shipsmall.png');
+    game.load.image('barbg', 'assets/images/barbg.png');
+    game.load.image('energybar', 'assets/images/energybar.png');
+    game.load.image('hpbar', 'assets/images/hpbar.png');
     game.load.image('bullet', 'assets/images/bullet.png');
     game.load.image('beam', 'assets/images/beam.png');
     game.load.image('dot', 'assets/images/dot.png');
-    game.load.image('square', 'assets/images/redsquare.png');
+    game.load.image('speck', 'assets/images/speck.png');
+    game.load.image('square', 'assets/images/square.png');
+    game.load.image('blackhole', 'assets/images/blackhole.png');
 }
 
 function create() {
     this.game.forceSingleUpdate = true
-    this.game.time.advancedTiming = true;
+    //this.game.time.advancedTiming = true;
+
     // enable Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 0;
     
+    // Groups
+    background = game.add.group();
+    midground = game.add.group();
+    foreground = game.add.group();
+    hud = game.add.group();
+
     // Background
-    //game.add.sprite(0, 0, 'sky');
-    this.game.stage.backgroundColor = 0x333333
+    SetupBackground();
+
+    // HUD
+    SetupHUD();
 
     // The player
     player = new Player(game, game.world.width / 2, game.world.height / 2);
     
-    SetupPlatforms();
-    
     // bullets group
-    bulletPool = new Pool(game, Bullet, 2, 'bullets');
+    bulletPool = new Pool(game, Bullet, 6, 'bullets');
     bulletPool.enableBody = true;
     
     // beam group
-    beamPool = new Pool(game, Beam, 3, 'beams');
+    beamPool = new Pool(game, Beam, 6, 'beams');
     //beamPool.enableBody = true;
 
-    SetupStars();
-
-    SetupSquares();
-
-    // Set up score text
-    scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-
-    
+    // Enemies
+    EnemyStart();
 }
 
-function SetupPlatforms() {
-    // Platforms group (ground and 2 ledges)
-    platforms = game.add.group();
-
-    // Enable physics for all objects in playforms group
-    platforms.enableBody = true;
-    /*
-    // Ground
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
-
-    // Scale it to fit the width (original sprite is 400x32)
-    ground.scale.setTo(2, 2);
-
-    ground.body.immovable = true;
-
-    // 2 ledges
-    var ledge = platforms.create(400, 400, 'ground');
-    ledge.body.immovable = true;
-
-    ledge = platforms.create(-150, 250, 'ground');
-    ledge.body.immovable = true;
-    */
-}
-
-function SetupStars() {
-
-    starPool = new Pool(game, Star, 10, 'stars');
-    starPool.enableBody = true;
-
-    game.time.events.loop(400, SpawnStar, this);
-    //SpawnStar();
-}
-
-function SetupSquares() {
-    
-    squarePool = new Pool(game, Square, 5, 'squares');
-    squarePool.enableBody = true;
-
-    game.time.events.loop(3000, SpawnSquare, this);
-}
-
-function SpawnStar() {
-    starPool.create(800, Math.random() * 600, 200);
-}
-
-function SpawnSquare() {
-    squarePool.create(800, Math.random() * 600, 200);
-}
 
 function update() {
-    // Collisions between stars and platforms
     //game.physics.arcade.collide(stars, platforms);
-    game.physics.arcade.overlap(player, starPool, HitEnemy, null, this);
-    game.physics.arcade.overlap(player, squarePool, HitEnemy, null, this);
+    UpdateHUD();
+    EnemyManagerUpdate();
 }
 
-function HitEnemy (player, enemy) {
-    enemy.Hit(100);
-    player.Hit(enemy.hitDamage);
+function SetupBackground() {
+    //background.add.sprite(0, 0, 'sky');
+    game.stage.backgroundColor = 0x333333
+    var bgEmitter = background.add(new Phaser.Particles.Arcade.Emitter(game, game.width / 2, game.height / 2, 250));
+    bgEmitter.makeParticles('speck');
+
+    bgEmitter.minParticleSpeed.setTo(-3, -3);
+    bgEmitter.maxParticleSpeed.setTo(3, 3);
+    bgEmitter.width = game.width;
+    bgEmitter.height = game.height;
+    bgEmitter.start(true, 0, 0, 250);
+    bgEmitter.start(false, 0, 1);
+
+    bgEmitter.forEach(function(particle) {
+        particle.body.allowGravity = false;
+        particle.checkWorldBounds = true;     
+        particle.outOfBoundsKill = true;
+    }, this);
+}
+
+function SetupHUD() {
+    
+    scoreText = hud.add(new Phaser.Text(game, 16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' }));
+    hud.add(new Phaser.Sprite(game, 19, 59, 'barbg'));
+    hud.add(new Phaser.Sprite(game, 19, 74, 'barbg'));
+    hpBar = hud.add(new Phaser.Sprite(game, 20, 60, 'hpbar'));
+    energyBar = hud.add(new Phaser.Sprite(game, 20, 75, 'energybar'));
+}
+
+function UpdateHUD() {
+    hpBar.scale.x = player.health / player.healthMax;
+    energyBar.scale.x = player.energy / player.energyMax;
 }
 
 function render() {
@@ -128,8 +124,9 @@ function render() {
     game.debug.text("fps: " + this.game.time.fps, 100, 360);
     */
 
-    game.debug.text("Charge: " + player.chargeShotExponential, 100, 80);
-    game.debug.text("HP: " + player.health, 100, 100);
+    //game.debug.text("Energy: " + Math.round(player.energy), 100, 60);
+    //game.debug.text("Charge: " + Math.round(player.chargeShotExponential * 100) / 100, 100, 80);
+    //game.debug.text("HP: " + player.health, 100, 100);
     //game.debug.body(player);
 
     //game.debug.geom(closePoint, 'rgba(255,0,0,1)');
