@@ -31,7 +31,7 @@ function Player(game, x, y) {
     // Movement
     this.moveAccel = 2.5;
     this.maxMoveSpeed = 100;
-    this.minBounceSpeed = 800;
+    this.minBounceSpeed = 500;
 
     // Weapon firing
     this.minChargeShotTime = 0.3;

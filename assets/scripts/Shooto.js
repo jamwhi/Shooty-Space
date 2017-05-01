@@ -9,6 +9,7 @@ var beamPool;
 var starPool;
 var squarePool;
 var spawnerPool;
+var fuelPool;
 
 var cursors;
 var score = 0;
@@ -35,6 +36,8 @@ function preload() {
     game.load.image('hpbar', 'assets/images/hpbar.png');
     game.load.image('bullet', 'assets/images/bullet.png');
     game.load.image('beam', 'assets/images/beam.png');
+    game.load.spritesheet('beam2', 'assets/images/beam2.png', 441, 128, 11);
+    game.load.image('fuel', 'assets/images/fuel.png');
     game.load.image('dot', 'assets/images/dot.png');
     game.load.image('speck', 'assets/images/speck.png');
     game.load.image('square', 'assets/images/square.png');
@@ -70,7 +73,10 @@ function create() {
     
     // beam group
     beamPool = new Pool(game, Beam, 6, 'beams');
-    //beamPool.enableBody = true;
+
+    // fuel pool
+    fuelPool = new Pool(game, Fuel, 3, 'fuels');
+    fuelPool.create(100, 100, {});
 
     // Enemies
     EnemyStart();

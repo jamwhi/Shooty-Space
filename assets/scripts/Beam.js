@@ -6,22 +6,29 @@ Beam.prototype.constructor = Beam;
 function Beam (game) {
     this.game = game;
 
-    Phaser.Sprite.call(this, game, 0, 0, "beam");
+    Phaser.Sprite.call(this, game, 0, 0, "beam2");
+    this.animations.add('firing');
 
     this.exists = false;
     this.alive = false;
 
     //this.minSize = 0.2;
-    this.pixelWidth = 866; // This is the number of pixels in the texture itself. Must be changed based on imported texture
-    this.maxSize = 10;
+    this.pixelWidth = 441; // This is the number of pixels in the texture itself. Must be changed based on imported texture
+    this.pixelsPreOffset = 23;
+    this.pixelsPostOffset = 23;
+
+    this.maxSize = 4;
     this.size = this.maxSize;
     this.timeAlive = 0.5;
     this.time = 0;
 
     this.power = 1;
-    this.maxWidth = 30;
-    this.beamWidth = 1;
+    this.maxWidth = 50;
+    this.minWidth = 15;
+    this.beamWidth = 15;
 
+    this.x1 = 0;
+    this.y1 = 0;
     this.x2 = 0;
     this.y2 = 0;
 
@@ -38,21 +45,21 @@ Beam.prototype.stdReset = function(x, y) {
     this.exists = true;
     this.alive = true;
     this.time = 0;
-    this.scale.setTo(1, 1);
+    this.scale.setTo(2, 1);
 }
 
 Beam.prototype.Spawn = function(x, y, data) {
     // Shoot it in the right direction
     this.stdReset(x, y);
     this.power = data.power
-    this.x = x;
-    this.y = y;
     this.rotation = data.direction;
+    this.x1 = x;
+    this.y1 = y;
     this.x2 = this.x + Math.cos(this.rotation) * 1000;
     this.y2 = this.y + Math.sin(this.rotation) * 1000;
 
     this.size = Math.max(0.5, this.power * this.maxSize);
-    this.beamWidth = this.power * this.maxWidth;
+    this.beamWidth = this.minWidth + this.power * (this.maxWidth - this.minWidth);
     this.hitDamage = this.minDamage + (this.maxDamage - this.minDamage) * this.power;
 
     this.alive = true;
@@ -74,24 +81,27 @@ Beam.prototype.update = function() {
 }
 
 Beam.prototype.Fire = function() {
-    var ray = new Phaser.Line(this.x, this.y, this.x2, this.y2);
+    var ray = new Phaser.Line(this.x1, this.y1, this.x2, this.y2);
     //var hits = this.RayHit(ray, starPool);
     var hits = this.RayHitCircles(ray, [starPool, squarePool]);
 
-    if (hits.length == 0) {
-        return;
+    if (hits.length > 0) {
+
+        if (this.power < 0.4) {
+            var c = this.ClosestHit(hits);
+            this.HitStar(c);
+            this.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth - this.pixelsPreOffset - this.pixelsPostOffset);
+        } else {
+            hits.forEach(function(o) {
+                this.HitStar(o);
+            }, this)
+        }
     }
 
-    if (this.power < 0.4) {
-        var c = this.ClosestHit(hits);
-        this.HitStar(c);
-        this.scale.x = (c.position.distance(this) - c.radius) / this.pixelWidth;
-    } else {
-        hits.forEach(function(o) {
-            this.HitStar(o);
-        }, this)
-    }
+    this.x = this.x1 + Math.cos(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
+    this.y = this.y1 + Math.sin(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
 
+    //this.animations.play('firing', 60, true);
     //this.game.Physics.Arcade.isPaused = true;
 }
 
@@ -164,7 +174,7 @@ Beam.prototype.RayHitCircles = function(ray, hitGroups) {
     
     hitGroups.forEach(function(g) {
         g.forEachAlive(function(o) {
-            var closestPoint = this.ClosestPointOnBeamToPoint(o, true);
+            var closestPoint = this.ClosestPointOnBeamToPoint(ray, o, true);
             if (closestPoint.distance(o) <= o.radius + this.beamWidth) {
                 hits.push(o);
             }
@@ -183,10 +193,12 @@ Beam.prototype.HitStar = function(star) {
     }
 }
 
-Beam.prototype.ClosestPointOnBeamToPoint = function(P, clamp) {
+Beam.prototype.ClosestPointOnBeamToPoint = function(ray, P, clamp) {
     //def GetClosestPoint(A, B, P)
-    var A = new Phaser.Point(this.x, this.y);
-    var B = new Phaser.Point(this.x2, this.y2);
+    //var A = new Phaser.Point(this.x1, this.y1);
+    //var B = new Phaser.Point(this.x2, this.y2);
+    var A =  ray.start;
+    var B = ray.end;
 
     var AP = new Phaser.Point(P.x - A.x, P.y - A.y)     // Storing vector A->P
     var AB = new Phaser.Point(B.x - A.x, B.y - A.y)     // Storing vector A->B
