@@ -34,17 +34,18 @@ function Player(game, x, y) {
     this.minBounceSpeed = 800;
 
     // Weapon firing
-    this.minChargeShotTime = 0.01;
-    this.maxChargeShotTime = 0.3;
+    this.minChargeShotTime = 0.3;
+    this.maxChargeShotTime = 0.7;
     this.recoil = -840;
     this.bulletSpeed = 1200;
     this.bulletHeadStart = 20;
 
     // Energy
     this.energyMax = 100;
-    this.energyRechargeSpeed = 1;
-    this.energyFirstStep = 3;
-    this.energyStep = 0.5;
+    this.energyRechargeSpeed = 0.5;
+    this.energyRechargeSpeedSlow = 0.1;
+    this.energyToShoot = 8;
+    this.energyToShootMaxCharged = 20;
     this.energyRechargeDelay = 0.2;
     
     
@@ -62,7 +63,6 @@ Player.prototype.initialValues = function() {
     this.health = this.healthMax;
     this.mouseFired = false;
     this.chargingShot = false;
-    this.hasDoneFirstCharge = false;
     this.currentChargeShotTime = 0;
     this.chargeShotPercent = 0;
     this.chargeShotExponential = 0;
@@ -91,9 +91,15 @@ Player.prototype.update = function() {
 
     if (this.chargingShot) {
         this.KeepChargingShot();
-    } else if (this.energyRechargeDelayCurrent <= 0) {
-        if (this.energy < this.energyMax) {   
-            this.energy += this.energyRechargeSpeed;
+    } 
+    
+    if (this.energyRechargeDelayCurrent <= 0) {
+        if (this.energy < this.energyMax) {
+            if (this.chargingShot) {
+                this.energy += this.energyRechargeSpeedSlow
+            } else {
+                this.energy += this.energyRechargeSpeed;
+            }
             this.energy = Math.min(this.energy, this.energyMax);
         }
     } else {
@@ -107,34 +113,18 @@ Player.prototype.update = function() {
 }
 
 Player.prototype.KeepChargingShot = function() {
-    // Move forwards slightly
-    //this.body.velocity.x += Math.cos(this.rotation) * this.moveAccel;
-    //this.body.velocity.y += Math.sin(this.rotation) * this.moveAccel;
-    if (!this.hasDoneFirstCharge) {
-        if (!this.TryFirstChargeStep()) {
-            return;
-        }
-    }
 
     var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
     var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
     this.chargeGraphic.x = x;
     this.chargeGraphic.y = y;
 
-
-    if (this.energy < this.energyStep) {
-        return
-    }
-
     if (this.currentChargeShotTime >= this.maxChargeShotTime) {
         // Weapon is already fully charged
         this.currentChargeShotTime = this.maxChargeShotTime;
         return;
     }
-
-    this.energy -= this.energyStep;
     
-    //this.chargeShotPercent = (this.currentChargeShotTime - this.minChargeShotTime) / (this.maxChargeShotTime - this.minChargeShotTime);
     this.UpdateChargeShot();
 }
 
@@ -156,6 +146,7 @@ Player.prototype.CheckMouseInput = function() {
             // Mouse Down
             this.mouseFired = true;
 
+            this.Fire();
             this.StartCharge();
         }
     } else {
@@ -190,18 +181,24 @@ function hitWorldBounds(sprite, up, down, left, right) {
     }
 }
 
-Player.prototype.StartCharge = function() {
-    this.chargingShot = true;
-    this.TryFirstChargeStep();
-}
-
-Player.prototype.TryFirstChargeStep = function() {
-    if (this.energy < this.energyFirstStep) {
-        return false;
+Player.prototype.CanFire = function() {
+    if (this.chargingShot) {
+        if (this.currentChargeShotTime >= this.minChargeShotTime) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    this.hasDoneFirstCharge = true;
-    this.energy -= this.energyFirstStep;
+    if (this.energy >= this.energyToShoot) {
+        return true;
+    }
+    return false;
+}
+
+Player.prototype.StartCharge = function() {
+    this.chargingShot = true;
+    
     var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
     var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
     this.chargeGraphic.x = x;
@@ -210,8 +207,6 @@ Player.prototype.TryFirstChargeStep = function() {
     this.chargeGraphic.visible = true;
     
     this.UpdateChargeShot();
-
-    return true;
 }
 
 Player.prototype.UpdateChargeShot = function() {
@@ -225,12 +220,17 @@ Player.prototype.UpdateChargeShot = function() {
 }
 
 Player.prototype.Fire = function() {
-    
-    this.chargingShot = false;
-    this.chargeGraphic.visible = false;
 
-    if (this.currentChargeShotTime >= this.minChargeShotTime)
-    {
+    if (this.CanFire()) {
+        
+        if (this.chargingShot) {
+            this.energy -= this.chargeShotExponential * this.energyToShootMaxCharged;
+        } else {
+            this.energy -= this.energyToShoot;
+        }
+
+        this.energy = Math.max(this.energy, 0);
+
         var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
         var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
 
@@ -244,11 +244,15 @@ Player.prototype.Fire = function() {
         this.body.velocity.y += Math.sin(this.rotation) * chargeRecoil;
 
         this.energyRechargeDelayCurrent = this.energyRechargeDelay;
+
     }
+
+    this.chargingShot = false;
+    this.chargeGraphic.visible = false;
 
     this.currentChargeShotTime = 0;
     this.chargeShotExponential = 0;
-    this.hasDoneFirstCharge = false;
+
 }
 
 Player.prototype.Hit = function(hitDamage) {
