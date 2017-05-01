@@ -66,7 +66,7 @@ function SetupPlatforms() {
 
 function EnemyManagerUpdate() {
     CheckTimers();
-    CheckEnemyCollisions();
+    //CheckEnemyCollisions();
 }
 
 function AddTimer(t, f) {

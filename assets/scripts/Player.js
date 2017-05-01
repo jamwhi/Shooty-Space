@@ -43,8 +43,9 @@ function Player(game, x, y) {
     // Energy
     this.energyMax = 100;
     this.energyRechargeSpeed = 1;
-    this.energyFirstStep = 10;
-    this.energyStep = 2.2;
+    this.energyFirstStep = 3;
+    this.energyStep = 0.5;
+    this.energyRechargeDelay = 0.2;
     
     
     // Setup initial values
@@ -62,11 +63,12 @@ Player.prototype.initialValues = function() {
     this.mouseFired = false;
     this.chargingShot = false;
     this.hasDoneFirstCharge = false;
-    this.energy = this.energyMax;
     this.currentChargeShotTime = 0;
     this.chargeShotPercent = 0;
     this.chargeShotExponential = 0;
     this.chargeGraphic.visible = false;
+    this.energy = this.energyMax;
+    this.energyRechargeDelayCurrent = 0;
 
     // Update HUD
     score = 0;
@@ -89,12 +91,16 @@ Player.prototype.update = function() {
 
     if (this.chargingShot) {
         this.KeepChargingShot();
+    } else if (this.energyRechargeDelayCurrent <= 0) {
+        if (this.energy < this.energyMax) {   
+            this.energy += this.energyRechargeSpeed;
+            this.energy = Math.min(this.energy, this.energyMax);
+        }
+    } else {
+        this.energyRechargeDelayCurrent -= this.game.time.physicsElapsed;
     }
 
-    if (this.energy < this.energyMax) {
-        this.energy += this.energyRechargeSpeed;
-        this.energy = Math.min(this.energy, this.energyMax);
-    }
+    
     
 
     this.ApplyDrag();
@@ -223,7 +229,7 @@ Player.prototype.Fire = function() {
     this.chargingShot = false;
     this.chargeGraphic.visible = false;
 
-    if (this.currentChargeShotTime > this.minChargeShotTime)
+    if (this.currentChargeShotTime >= this.minChargeShotTime)
     {
         var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
         var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
@@ -236,6 +242,8 @@ Player.prototype.Fire = function() {
         var chargeRecoil = this.recoil * (0.1 + this.chargeShotExponential);
         this.body.velocity.x += Math.cos(this.rotation) * chargeRecoil;
         this.body.velocity.y += Math.sin(this.rotation) * chargeRecoil;
+
+        this.energyRechargeDelayCurrent = this.energyRechargeDelay;
     }
 
     this.currentChargeShotTime = 0;
