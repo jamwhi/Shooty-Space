@@ -35,14 +35,22 @@ function preload() {
     game.load.image('energybar', 'assets/images/energybar.png');
     game.load.image('hpbar', 'assets/images/hpbar.png');
     game.load.image('bullet', 'assets/images/bullet.png');
-    game.load.image('beam', 'assets/images/beam.png');
+
+    //game.load.image('beam', 'assets/images/beam.png');
     game.load.spritesheet('beam2', 'assets/images/beam2.png', 512, 128, 11);
-    game.load.image('beam3', 'assets/images/beam3.png');
+    //game.load.image('beam3', 'assets/images/beam3.png');
+
+    //game.load.spritesheet('beamStart', 'assets/images/beam5start.png', 75, 128, 11);
+    //game.load.spritesheet('beamMid', 'assets/images/beam5mid.png', 1, 128, 11);
+    //game.load.spritesheet('beamEnd', 'assets/images/beam5end.png', 75, 128, 11);
+
     game.load.image('fuel', 'assets/images/fuel.png');
     game.load.image('dot', 'assets/images/dot.png');
     game.load.image('speck', 'assets/images/speck.png');
     game.load.image('square', 'assets/images/square.png');
     game.load.image('blackhole', 'assets/images/blackhole.png');
+
+    game.load.image('empty', 'assets/images/empty.png');
 }
 
 function create() {
@@ -135,7 +143,7 @@ function render() {
     //game.debug.text("Charge: " + Math.round(player.chargeShotExponential * 100) / 100, 100, 80);
     //game.debug.text("HP: " + player.health, 100, 100);
     //game.debug.body(player);
-
+    
     //game.debug.geom(closePoint, 'rgba(255,0,0,1)');
     //somelines.forEach(function(line) {
     //        game.debug.geom(line, 'rgba(255,0,0,1)' ) ;

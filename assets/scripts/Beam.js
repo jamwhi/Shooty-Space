@@ -5,17 +5,23 @@ Beam.prototype.constructor = Beam;
 
 function Beam (game) {
     this.game = game;
+    Phaser.Sprite.call(this, game, 0, 0, 'empty');
 
-    Phaser.Sprite.call(this, game, 0, 0, "beam2");
-    this.animations.add('firing');
+    this.midSprite = this.addChild(game.make.sprite(0, 0, 'beam2'));
+    //this.startSprite = this.addChild(game.make.sprite(0, 0, 'beamStart'));
+    //this.endSprite = this.addChild(game.make.sprite(0, 0, 'beamEnd'));
+
+    this.midSprite.animations.add('firing');
+
+    //this.endSprite.visible = false;
 
     this.exists = false;
     this.alive = false;
 
     //this.minSize = 0.2;
-    this.pixelWidth = 441; // This is the number of pixels in the texture itself. Must be changed based on imported texture
-    this.pixelsPreOffset = 23;
-    this.pixelsPostOffset = 23;
+    this.pixelWidth = 512; // This is the number of pixels in the texture itself. Must be changed based on imported texture
+    this.pixelsPreOffset = 50;
+    this.pixelsPostOffset = 50;
 
     this.maxSize = 3;
     this.size = this.maxSize;
@@ -43,7 +49,19 @@ function Beam (game) {
     this.maxDamage = 200;
     this.hitDamage = 50;
 
+    this.midSprite.scale.setTo(1, 1);
+    this.midSprite.scale.setTo(5, 5);
+    //this.startSprite.scale.setTo(1, 2);
+    this.scale.setTo(1, 1);
+
     this.anchor.setTo(0, 0.5);
+    this.midSprite.anchor.setTo(0, 0.5);
+    //this.endSprite.anchor.setTo(0, 0.5);
+    //this.startSprite.anchor.setTo(0, 0.5);
+
+    this.midSprite.x = 0;
+    //this.startSprite.x = -37;
+    //this.midSprite.alignTo(this.startSprite, Phaser.RIGHT_CENTER, 0);
 }
 
 
@@ -52,7 +70,8 @@ Beam.prototype.stdReset = function(x, y) {
     this.exists = true;
     this.alive = true;
     this.time = 0;
-    this.scale.setTo(2, 1);
+    this.scale.setTo(1, 1);
+    this.midSprite.scale.setTo(2, 1);
 }
 
 Beam.prototype.Spawn = function(x, y, data) {
@@ -77,15 +96,14 @@ Beam.prototype.Spawn = function(x, y, data) {
 
     this.alive = true;
     this.exists = true;
-
     
 
-    this.animations.play('firing', 60, true);
+    this.midSprite.animations.play('firing', 60, true);
 
     this.Fire();
 
-    this.x = this.x1 + Math.cos(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
-    this.y = this.y1 + Math.sin(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
+    this.midSprite.x = -this.pixelsPreOffset * this.midSprite.scale.x;
+    //this.midSprite.y = this.y1 + Math.sin(this.rotation) * -this.pixelsPreOffset * 2 * this.midSprite.scale.x;
 }
 
 Beam.prototype.update = function() {
@@ -122,7 +140,8 @@ Beam.prototype.Fire = function() {
         if (!this.piercing) {
             var c = this.ClosestHit(hits);
             this.HitStar(c);
-            this.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth - this.pixelsPreOffset - this.pixelsPostOffset);
+            //this.midSprite.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth);
+            this.midSprite.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth - this.pixelsPreOffset - this.pixelsPostOffset);
         } else {
             hits.forEach(function(o) {
                 this.HitStar(o);
