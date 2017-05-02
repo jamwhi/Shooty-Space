@@ -36,7 +36,8 @@ function preload() {
     game.load.image('hpbar', 'assets/images/hpbar.png');
     game.load.image('bullet', 'assets/images/bullet.png');
     game.load.image('beam', 'assets/images/beam.png');
-    game.load.spritesheet('beam2', 'assets/images/beam2.png', 441, 128, 11);
+    //game.load.spritesheet('beam2', 'assets/images/beam2.png', 441, 128, 11);
+    game.load.image('beam3', 'assets/images/beam3.png');
     game.load.image('fuel', 'assets/images/fuel.png');
     game.load.image('dot', 'assets/images/dot.png');
     game.load.image('speck', 'assets/images/speck.png');

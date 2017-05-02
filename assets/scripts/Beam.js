@@ -6,8 +6,8 @@ Beam.prototype.constructor = Beam;
 function Beam (game) {
     this.game = game;
 
-    Phaser.Sprite.call(this, game, 0, 0, "beam2");
-    this.animations.add('firing');
+    Phaser.Sprite.call(this, game, 0, 0, "beam3");
+    //this.animations.add('firing');
 
     this.exists = false;
     this.alive = false;
