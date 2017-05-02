@@ -6,8 +6,8 @@ Beam.prototype.constructor = Beam;
 function Beam (game) {
     this.game = game;
 
-    Phaser.Sprite.call(this, game, 0, 0, "beam3");
-    //this.animations.add('firing');
+    Phaser.Sprite.call(this, game, 0, 0, "beam2");
+    this.animations.add('firing');
 
     this.exists = false;
     this.alive = false;
@@ -19,10 +19,17 @@ function Beam (game) {
 
     this.maxSize = 3;
     this.size = this.maxSize;
-    this.timeAlive = 0.5;
+    this.minTimeAlive = 0.3;
+    this.maxTimeAlive = 0.8;
+    this.timeAlive = 0.1;
     this.time = 0;
 
+    this.timeBetweenHits = 0.1;
+    this.timeSinceLastHit = 0;
+
     this.power = 1;
+    this.piercePower = 0.4;
+    this.piercing = false;
     this.maxWidth = 50;
     this.minWidth = 15;
     this.beamWidth = 15;
@@ -52,6 +59,11 @@ Beam.prototype.Spawn = function(x, y, data) {
     // Shoot it in the right direction
     this.stdReset(x, y);
     this.power = data.power
+    if (this.power >= this.piercePower) {
+        this.piercing = true;
+    } else {
+        this.piercing = false;
+    }
     this.rotation = data.direction;
     this.x1 = x;
     this.y1 = y;
@@ -59,20 +71,40 @@ Beam.prototype.Spawn = function(x, y, data) {
     this.y2 = this.y + Math.sin(this.rotation) * 1000;
 
     this.size = Math.max(0.5, this.power * this.maxSize);
+    this.timeAlive = this.minTimeAlive + this.power * (this.maxTimeAlive - this.minTimeAlive);
     this.beamWidth = this.minWidth + this.power * (this.maxWidth - this.minWidth);
     this.hitDamage = this.minDamage + (this.maxDamage - this.minDamage) * this.power;
 
     this.alive = true;
     this.exists = true;
 
+    
+
+    this.animations.play('firing', 60, true);
+
     this.Fire();
+
+    this.x = this.x1 + Math.cos(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
+    this.y = this.y1 + Math.sin(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
 }
 
 Beam.prototype.update = function() {
     if (this.alive) {
         this.time += this.game.time.physicsElapsed;
+        
 
-        this.scale.y = (1 - (this.time / this.timeAlive)) * this.size;
+        var t = this.time / this.timeAlive;
+        t = t * t * t * t;
+        this.scale.y = (1 - t) * this.size;
+
+        if (this.piercing) {
+            this.timeSinceLastHit += this.game.time.physicsElapsed;
+            if (this.timeSinceLastHit > this.timeBetweenHits) {
+                this.timeSinceLastHit -= this.timeBetweenHits;
+                this.Fire();
+            }
+        }
+       
 
         if (this.time >= this.timeAlive) {
             this.kill();
@@ -87,7 +119,7 @@ Beam.prototype.Fire = function() {
 
     if (hits.length > 0) {
 
-        if (this.power < 0.4) {
+        if (!this.piercing) {
             var c = this.ClosestHit(hits);
             this.HitStar(c);
             this.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth - this.pixelsPreOffset - this.pixelsPostOffset);
@@ -97,12 +129,6 @@ Beam.prototype.Fire = function() {
             }, this)
         }
     }
-
-    this.x = this.x1 + Math.cos(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
-    this.y = this.y1 + Math.sin(this.rotation) * -this.pixelsPreOffset * 2 * this.scale.x;
-
-    //this.animations.play('firing', 60, true);
-    //this.game.Physics.Arcade.isPaused = true;
 }
 
 
