@@ -17,7 +17,7 @@ function Beam (game) {
     this.pixelsPreOffset = 23;
     this.pixelsPostOffset = 23;
 
-    this.maxSize = 4;
+    this.maxSize = 3;
     this.size = this.maxSize;
     this.timeAlive = 0.5;
     this.time = 0;
