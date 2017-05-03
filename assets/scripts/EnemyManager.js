@@ -14,16 +14,16 @@ function SetupSpawners() {
 }
 
 function SetupStars() {
-    starPool = new Pool(game, Star, 10, 'stars');
+    starPool = new Pool(game, Star, 10, 'stars', enemies);
     starPool.enableBody = true;
 
     //game.time.events.loop(1000, SpawnStar, this);
     AddTimer(1, SpawnStar);
-    //SpawnStar();
+    SpawnStar();
 }
 
 function SetupSquares() {
-    squarePool = new Pool(game, Square, 5, 'squares');
+    squarePool = new Pool(game, Square, 5, 'squares', enemies);
     squarePool.enableBody = true;
 
     //game.time.events.loop(3000, SpawnSquare, this);
@@ -89,12 +89,6 @@ function CheckTimers() {
 }
 
 function CheckEnemyCollisions() {
-    // Collisions between the player and enemies
-    game.physics.arcade.overlap(player, starPool, HitEnemy, null, this);
-    game.physics.arcade.overlap(player, squarePool, HitEnemy, null, this);
-}
-
-function HitEnemy (player, enemy) {
-    enemy.Hit(100);
-    player.Hit(enemy.hitDamage);
+    // Collisions between the enemies and other things
+    
 }

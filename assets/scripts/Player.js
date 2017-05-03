@@ -27,6 +27,8 @@ function Player(game, x, y) {
     
     // Health
     this.healthMax = 100;
+    this.fuel = 0;
+    this.maxFuel = 5;
 
     // Movement
     this.moveAccel = 2.5;
@@ -47,6 +49,10 @@ function Player(game, x, y) {
     this.energyToShoot = 8;
     this.energyToShootMaxCharged = 20;
     this.energyRechargeDelay = 0.2;
+
+    // Hit
+    this.hitTime = 1;
+    this.hitTint = 0xff0000; // red
     
     
     // Setup initial values
@@ -69,12 +75,10 @@ Player.prototype.initialValues = function() {
     this.chargeGraphic.visible = false;
     this.energy = this.energyMax;
     this.energyRechargeDelayCurrent = 0;
+    this.hitTimeCurrent = 0;
 
     // Update HUD
-    score = 0;
-    scoreText.text = 'Score: ' + score;
-    hpBar.scale.x = 1;
-    energyBar.scale.x = 1;
+    UpdateScore(0);
 }
 
 Player.prototype.stdReset = function(x, y) {
@@ -107,9 +111,44 @@ Player.prototype.update = function() {
     }
 
     
-    
+    this.CheckHitTime();
 
     this.ApplyDrag();
+
+    this.CheckCollisions();
+}
+
+
+Player.prototype.CheckHitTime = function() {
+    if (this.hitTimeCurrent > 0) {
+        var step = Math.round((1 - (this.hitTimeCurrent / this.hitTime)) * 100);
+        this.tint = Phaser.Color.interpolateColorWithRGB(this.hitTint, 0xff, 0xff, 0xff, 100, step);
+        this.hitTimeCurrent -= this.game.time.physicsElapsed;
+    }
+}
+
+Player.prototype.CheckCollisions = function() {
+    // Enemies
+
+    if (this.hitTimeCurrent <= 0) {
+        enemies.forEach(function(enemyPool) {
+            game.physics.arcade.overlap(player, enemyPool, this.HitEnemy, null, this);
+        }, this);
+    }
+
+    game.physics.arcade.overlap(player, fuelPool, this.CollectFuel, null, this);
+}
+
+Player.prototype.CollectFuel = function(player, fuel) {
+    this.fuel++;
+    fuelBar.Set(this.fuel);
+    fuel.Collect();
+}
+
+Player.prototype.HitEnemy = function(player, enemy) {
+    if (this.hitTimeCurrent > 0) return;
+    enemy.Hit(1000);
+    this.Hit(enemy.hitDamage);
 }
 
 Player.prototype.KeepChargingShot = function() {
@@ -260,5 +299,7 @@ Player.prototype.Hit = function(hitDamage) {
 
     if (this.health <= 0) {
         player.stdReset(game.world.width / 2, game.world.height / 2)
+    } else {
+        this.hitTimeCurrent = this.hitTime;
     }
 }

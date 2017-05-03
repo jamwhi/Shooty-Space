@@ -133,7 +133,7 @@ Beam.prototype.update = function() {
 Beam.prototype.Fire = function() {
     var ray = new Phaser.Line(this.x1, this.y1, this.x2, this.y2);
     //var hits = this.RayHit(ray, starPool);
-    var hits = this.RayHitCircles(ray, [starPool, squarePool]);
+    var hits = this.RayHitCircles(ray, enemies);
 
     if (hits.length > 0) {
 

@@ -11,17 +11,20 @@ var squarePool;
 var spawnerPool;
 var fuelPool;
 
+var player;
 var cursors;
+
 var score = 0;
 var scoreText;
 var energyBar;
 var hpBar;
-var player;
+var fuelBar;
 
 var hud;
 var foreground;
 var midground;
 var background;
+var enemies;
 
 function preload() {
     
@@ -31,10 +34,14 @@ function preload() {
     //game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
 
     game.load.image('ship', 'assets/images/shipsmall.png');
+    game.load.image('bullet', 'assets/images/bullet.png');
+
     game.load.image('barbg', 'assets/images/barbg.png');
     game.load.image('energybar', 'assets/images/energybar.png');
     game.load.image('hpbar', 'assets/images/hpbar.png');
-    game.load.image('bullet', 'assets/images/bullet.png');
+    game.load.image('fuelbar', 'assets/images/fuelbar.png');
+    game.load.image('hpbarDiff', 'assets/images/hpbarDiff.png');
+    game.load.image('fuelbarDiff', 'assets/images/fuelbarDiff.png');
 
     //game.load.image('beam', 'assets/images/beam.png');
     game.load.spritesheet('beam2', 'assets/images/beam2.png', 512, 128, 11);
@@ -44,7 +51,7 @@ function preload() {
     //game.load.spritesheet('beamMid', 'assets/images/beam5mid.png', 1, 128, 11);
     //game.load.spritesheet('beamEnd', 'assets/images/beam5end.png', 75, 128, 11);
 
-    game.load.image('fuel', 'assets/images/fuel.png');
+    game.load.image('fuel', 'assets/images/fuelfull.png');
     game.load.image('dot', 'assets/images/dot.png');
     game.load.image('speck', 'assets/images/speck.png');
     game.load.image('square', 'assets/images/square.png');
@@ -65,6 +72,8 @@ function create() {
     background = game.add.group();
     midground = game.add.group();
     foreground = game.add.group();
+    enemies = game.add.group();
+    midground.add(enemies);
     hud = game.add.group();
 
     // Background
@@ -85,7 +94,7 @@ function create() {
 
     // fuel pool
     fuelPool = new Pool(game, Fuel, 3, 'fuels');
-    fuelPool.create(100, 100, {});
+    fuelPool.create(400, 400, {});
 
     // Enemies
     EnemyStart();
@@ -118,19 +127,8 @@ function SetupBackground() {
     }, this);
 }
 
-function SetupHUD() {
-    
-    scoreText = hud.add(new Phaser.Text(game, 16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' }));
-    hud.add(new Phaser.Sprite(game, 19, 59, 'barbg'));
-    hud.add(new Phaser.Sprite(game, 19, 74, 'barbg'));
-    hpBar = hud.add(new Phaser.Sprite(game, 20, 60, 'hpbar'));
-    energyBar = hud.add(new Phaser.Sprite(game, 20, 75, 'energybar'));
-}
 
-function UpdateHUD() {
-    hpBar.scale.x = player.health / player.healthMax;
-    energyBar.scale.x = player.energy / player.energyMax;
-}
+
 
 function render() {
     /*

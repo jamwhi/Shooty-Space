@@ -40,3 +40,7 @@ Fuel.prototype.update = function() {
 Fuel.prototype.Explode = function(Fuel, platform) {
     this.kill();
 }
+
+Fuel.prototype.Collect = function() {
+    this.kill();
+}
