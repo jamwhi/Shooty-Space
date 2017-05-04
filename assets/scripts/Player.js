@@ -53,7 +53,9 @@ function Player(game, x, y) {
     // Hit
     this.hitTime = 1;
     this.hitTint = 0xff0000; // red
-    
+
+    // Other
+    this.fuelGetDistance = 75;
     
     // Setup initial values
     this.initialValues(x, y);
@@ -116,6 +118,16 @@ Player.prototype.update = function() {
     this.ApplyDrag();
 
     this.CheckCollisions();
+
+    this.FindCloseFuel();
+}
+
+Player.prototype.FindCloseFuel = function() {
+    fuelPool.forEach(function (f) {
+        if (f.target == null && f.position.distance(this) < this.fuelGetDistance) {
+            f.HomeTo(this);
+        }
+    }, this);
 }
 
 

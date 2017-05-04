@@ -12,11 +12,18 @@ function Fuel (game) {
     this.anchor.setTo(0.5);
     this.scale.setTo(0.4);
     this.game.physics.arcade.enable(this);
+
+    this.target = null;
+    this.maxSpeed = 900;
+    this.acceleration = 800;
+
+    this.speed = 0;
 }
 
 
 Fuel.prototype.stdReset = function(x, y) {
     this.reset(x, y);
+    this.speed = 0;
 }
 
 Fuel.prototype.Spawn = function(x, y, data) {
@@ -33,7 +40,15 @@ Fuel.prototype.Spawn = function(x, y, data) {
 
 Fuel.prototype.update = function() {
     if (this.alive) {
-        
+        if (this.target != null) {
+            if (this.speed < this.maxSpeed) {
+                this.speed += this.acceleration * this.game.time.physicsElapsed;
+            }
+
+            var vectorTo = Phaser.Point.subtract(this.target.position, this.position);
+            vectorTo.setMagnitude(this.speed);
+            this.body.velocity = vectorTo;
+        }
     }
 }
 
@@ -43,4 +58,8 @@ Fuel.prototype.Explode = function(Fuel, platform) {
 
 Fuel.prototype.Collect = function() {
     this.kill();
+}
+
+Fuel.prototype.HomeTo = function(target) {
+    this.target = target;
 }
