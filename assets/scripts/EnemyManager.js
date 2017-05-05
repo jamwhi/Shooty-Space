@@ -3,6 +3,9 @@
 spawnTimers = [];
 
 function EnemyStart() {
+    enemies = game.add.group();
+    midground.add(enemies);
+    
     SetupPlatforms();
     SetupSpawners();
     SetupStars();

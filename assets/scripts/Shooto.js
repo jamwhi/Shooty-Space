@@ -51,7 +51,8 @@ function preload() {
     //game.load.spritesheet('beamMid', 'assets/images/beam5mid.png', 1, 128, 11);
     //game.load.spritesheet('beamEnd', 'assets/images/beam5end.png', 75, 128, 11);
 
-    game.load.image('fuel', 'assets/images/fuelfull.png');
+    //game.load.image('fuel', 'assets/images/fuelfull.png');
+    game.load.image('fuelGlob', 'assets/images/fuelGlob.png');
     game.load.image('dot', 'assets/images/dot.png');
     game.load.image('speck', 'assets/images/speck.png');
     game.load.image('square', 'assets/images/square.png');
@@ -72,8 +73,6 @@ function create() {
     background = game.add.group();
     midground = game.add.group();
     foreground = game.add.group();
-    enemies = game.add.group();
-    midground.add(enemies);
     hud = game.add.group();
 
     // Background

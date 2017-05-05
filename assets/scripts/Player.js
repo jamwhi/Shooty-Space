@@ -134,8 +134,12 @@ Player.prototype.FindCloseFuel = function() {
 Player.prototype.CheckHitTime = function() {
     if (this.hitTimeCurrent > 0) {
         var step = Math.round((1 - (this.hitTimeCurrent / this.hitTime)) * 100);
-        this.tint = Phaser.Color.interpolateColorWithRGB(this.hitTint, 0xff, 0xff, 0xff, 100, step);
+        this.tint = Phaser.Color.interpolateColorWithRGB(this.hitTint, 0xff, 0xff, 0xff, 150, step);
         this.hitTimeCurrent -= this.game.time.physicsElapsed;
+
+        if (this.hitTimeCurrent <= 0) {
+            this.tint = 0xffffff;
+        }
     }
 }
 
