@@ -1,10 +1,11 @@
 
 
-Star.prototype = Object.create(Enemy.prototype);
-Star.prototype.constructor = Star;
+Asteroid.prototype = Object.create(Enemy.prototype);
+Asteroid.prototype.constructor = Asteroid;
 
-function Star (game) {
-    Enemy.call(this, game, 'star');
+function Asteroid (game) {
+    this.spriteString = 'asteroid' + Math.floor((Math.random() * 4) + 1); // random between 1 and 4 (inclusive)
+    Enemy.call(this, game, this.spriteString);
 
     this.body.bounce.setTo(1, 1);
     this.body.collideWorldBounds = true;
@@ -12,12 +13,20 @@ function Star (game) {
     this.maxHealth = 100;
     this.health = this.maxHealth;
     this.hitDamage = 20;
+
+    this.fuelSpawnChance = 0.1;
+    this.fuelMinTier = 2;
 }
 
-Star.prototype.Spawn = function(x, y, data) {
+Asteroid.prototype.Spawn = function(x, y, data) {
     Enemy.prototype.Spawn.call(this, x, y, data);
 
-    this.speed = data;
+    this.tier = data.tier;
+    this.scale.setTo(1 / this.tier);
+    this.maxHealth = 100 / this.tier;
+    this.health = this.maxHealth;
+
+    this.radius = this.width * 0.5;
     this.rotation = Math.random() * Phaser.Math.PI2;
     this.rotSpeed = Math.random() * 4 - 2;
     this.body.velocity.x = data.x;
@@ -26,18 +35,18 @@ Star.prototype.Spawn = function(x, y, data) {
     return this;
 }
 
-Star.prototype.update = function() {
+Asteroid.prototype.update = function() {
     if (this.alive) {
         Enemy.prototype.update.call(this);
 
         //game.physics.arcade.overlap(this, platforms, this.Explode, null, this);
-        //game.physics.arcade.overlap(this, stars, this.HitStar, null, this);
+        //game.physics.arcade.overlap(this, stars, this.HitAsteroid, null, this);
         this.rotation += this.rotSpeed * this.game.time.physicsElapsed;
         //this.CheckBounds();
     }
 }
 
-Star.prototype.Explode = function(bullet, platform) {
+Asteroid.prototype.Explode = function(bullet, platform) {
 
     var emitter = foreground.add(new Phaser.Particles.Arcade.Emitter(game, this.x, this.y, 10));
     emitter.makeParticles('dot');
@@ -54,6 +63,17 @@ Star.prototype.Explode = function(bullet, platform) {
 
     score += 1;
     scoreText.text = 'Score: ' + score;
+
+    if (this.tier < 3) {
+        for (var i = 0; i < 3; i++) {
+            asteroidPool.create(this.x, this.y, {
+                tier: 3,
+                x: Math.random() * 200 - 100, 
+                y: Math.random() * 200 - 100
+            });
+        }
+        
+    }
 
     this.kill();
 }

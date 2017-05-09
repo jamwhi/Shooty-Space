@@ -8,7 +8,7 @@ function EnemyStart() {
     
     SetupPlatforms();
     SetupSpawners();
-    SetupStars();
+    SetupAsteroids();
     SetupSquares();
 }
 
@@ -16,26 +16,28 @@ function SetupSpawners() {
     spawnerPool = new Pool(game, Spawner, 4, 'spawners');
 }
 
-function SetupStars() {
-    starPool = new Pool(game, Star, 10, 'stars', enemies);
-    starPool.enableBody = true;
+function SetupAsteroids() {
+    asteroidPool = new Pool(game, Asteroid, 10, 'asteroids', enemies);
+    asteroidPool.enableBody = true;
 
-    //game.time.events.loop(1000, SpawnStar, this);
-    AddTimer(1, SpawnStar);
-    SpawnStar();
+    AddTimer(3, SpawnAsteroid);
+    SpawnAsteroid();
 }
 
 function SetupSquares() {
     squarePool = new Pool(game, Square, 5, 'squares', enemies);
     squarePool.enableBody = true;
 
-    //game.time.events.loop(3000, SpawnSquare, this);
-    AddTimer(3, SpawnSquare);
+    AddTimer(4, SpawnSquare);
 }
 
-function SpawnStar() {
-    spawnerPool.create(Math.random() * game.width, Math.random() * game.height, {pool: starPool, data: {x: Math.random() * 200 - 100, y: Math.random() * 200 - 100}})
-    //starPool.create(Math.random() * game.width, Math.random() * game.height, {x: Math.random() * 200 - 100, y: Math.random() * 200 - 100});
+function SpawnAsteroid() {
+    spawnerPool.create(Math.random() * game.width, Math.random() * game.height, {pool: asteroidPool, data: {
+        tier: 2,
+        x: Math.random() * 200 - 100, 
+        y: Math.random() * 200 - 100
+    }});
+    //asteroidPool.create(Math.random() * game.width, Math.random() * game.height, {x: Math.random() * 200 - 100, y: Math.random() * 200 - 100});
 }
 
 function SpawnSquare() {

@@ -23,6 +23,7 @@ function Beam (game) {
     this.pixelsPreOffset = 50;
     this.pixelsPostOffset = 50;
 
+    this.minSize = 0.5
     this.maxSize = 3;
     this.size = this.maxSize;
     this.minTimeAlive = 0.3;
@@ -39,6 +40,7 @@ function Beam (game) {
     this.maxWidth = 50;
     this.minWidth = 15;
     this.beamWidth = 15;
+    
 
     this.x1 = 0;
     this.y1 = 0;
@@ -47,7 +49,19 @@ function Beam (game) {
 
     this.minDamage = 50;
     this.maxDamage = 200;
-    this.hitDamage = 50;
+
+
+    // temp testing
+    this.minSize = 0.2
+    this.maxSize = 1.1;
+    this.piercePower = 0.6;
+    this.maxWidth = 30;
+    this.minWidth = 15;
+    this.minTimeAlive = 0.2;
+    this.maxTimeAlive = 0.4;
+    this.minDamage = 20;
+    this.maxDamage = 100;
+    this.minDamage;
 
     this.midSprite.scale.setTo(1, 1);
     this.midSprite.scale.setTo(5, 5);
@@ -83,13 +97,14 @@ Beam.prototype.Spawn = function(x, y, data) {
     } else {
         this.piercing = false;
     }
+
     this.rotation = data.direction;
     this.x1 = x;
     this.y1 = y;
     this.x2 = this.x + Math.cos(this.rotation) * 1000;
     this.y2 = this.y + Math.sin(this.rotation) * 1000;
 
-    this.size = Math.max(0.5, this.power * this.maxSize);
+    this.size = Math.max(this.minSize, this.power * this.maxSize);
     this.timeAlive = this.minTimeAlive + this.power * (this.maxTimeAlive - this.minTimeAlive);
     this.beamWidth = this.minWidth + this.power * (this.maxWidth - this.minWidth);
     this.hitDamage = this.minDamage + (this.maxDamage - this.minDamage) * this.power;
@@ -132,19 +147,18 @@ Beam.prototype.update = function() {
 
 Beam.prototype.Fire = function() {
     var ray = new Phaser.Line(this.x1, this.y1, this.x2, this.y2);
-    //var hits = this.RayHit(ray, starPool);
     var hits = this.RayHitCircles(ray, enemies);
 
     if (hits.length > 0) {
 
         if (!this.piercing) {
             var c = this.ClosestHit(hits);
-            this.HitStar(c);
+            this.HitEnemy(c);
             //this.midSprite.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth);
             this.midSprite.scale.x = (c.position.distance(this) - c.radius) / (this.pixelWidth - this.pixelsPreOffset - this.pixelsPostOffset);
         } else {
             hits.forEach(function(o) {
-                this.HitStar(o);
+                this.HitEnemy(o);
             }, this)
         }
     }
@@ -229,8 +243,8 @@ Beam.prototype.RayHitCircles = function(ray, hitGroups) {
     return hits;
 }
 
-Beam.prototype.HitStar = function(star) {
-    star.Hit(this.hitDamage);
+Beam.prototype.HitEnemy = function(enemy) {
+    enemy.Hit(this.hitDamage);
     if (this.power >= 1) {
 
     } else {

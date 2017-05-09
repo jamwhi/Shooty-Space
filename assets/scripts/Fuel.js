@@ -45,6 +45,7 @@ function Fuel (game) {
 Fuel.prototype.stdReset = function(x, y) {
     this.reset(x, y);
     this.speed = 0;
+    this.Movement = null;
 }
 
 Fuel.prototype.Spawn = function(x, y, data) {
@@ -81,14 +82,8 @@ Fuel.prototype.update = function() {
         this.globs[3].position.x = -globPos; // bottom right
 
 
-        if (this.target != null) {
-            if (this.speed < this.maxSpeed) {
-                this.speed += this.acceleration * this.game.time.physicsElapsed;
-            }
-
-            var vectorTo = Phaser.Point.subtract(this.target.position, this.position);
-            vectorTo.setMagnitude(this.speed);
-            this.body.velocity = vectorTo;
+        if (this.Movement) {
+            this.Movement();
         }
 
 
@@ -106,4 +101,5 @@ Fuel.prototype.Collect = function() {
 
 Fuel.prototype.HomeTo = function(target) {
     this.target = target;
+    this.Movement = MoveTowardsTarget;
 }

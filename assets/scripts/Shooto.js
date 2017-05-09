@@ -6,7 +6,7 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, crea
 var platforms;
 var bulletPool;
 var beamPool;
-var starPool;
+var asteroidPool;
 var squarePool;
 var spawnerPool;
 var fuelPool;
@@ -30,10 +30,13 @@ function preload() {
     
     //game.load.image('sky', 'assets/images/sky.png');
     //game.load.image('ground', 'assets/images/platform.png');
-    game.load.image('star', 'assets/images/star.png');
+    game.load.image('asteroid1', 'assets/images/geomstyle/asteroid11.png');
+    game.load.image('asteroid2', 'assets/images/geomstyle/asteroid12.png');
+    game.load.image('asteroid3', 'assets/images/geomstyle/asteroid13.png');
+    game.load.image('asteroid4', 'assets/images/geomstyle/asteroid14.png');
     //game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
 
-    game.load.image('ship', 'assets/images/shipsmall.png');
+    game.load.image('ship', 'assets/images/geomstyle/ship.png');
     game.load.image('bullet', 'assets/images/bullet.png');
 
     game.load.image('barbg', 'assets/images/barbg.png');
@@ -55,7 +58,7 @@ function preload() {
     game.load.image('fuelGlob', 'assets/images/fuelGlob.png');
     game.load.image('dot', 'assets/images/dot.png');
     game.load.image('speck', 'assets/images/speck.png');
-    game.load.image('square', 'assets/images/square.png');
+    game.load.image('square', 'assets/images/geomstyle/square.png');
     game.load.image('blackhole', 'assets/images/blackhole.png');
 
     game.load.image('empty', 'assets/images/empty.png');
@@ -108,7 +111,7 @@ function update() {
 
 function SetupBackground() {
     //background.add.sprite(0, 0, 'sky');
-    game.stage.backgroundColor = 0x333333
+    game.stage.backgroundColor = 0x111111
     var bgEmitter = background.add(new Phaser.Particles.Arcade.Emitter(game, game.width / 2, game.height / 2, 250));
     bgEmitter.makeParticles('speck');
 
@@ -132,7 +135,7 @@ function SetupBackground() {
 function render() {
     /*
     game.debug.text("bullets: " + bulletPool.children.length, 100, 380 );
-    game.debug.text("stars: " + starPool.children.length, 100, 400 );
+    game.debug.text("stars: " + asteroidPool.children.length, 100, 400 );
     game.debug.text("fps: " + this.game.time.fps, 100, 360);
     */
 
@@ -148,7 +151,7 @@ function render() {
     //game.debug.geom(beamRay, 'rgba(255,0,0,1)' ) ;
     //game.debug.text("physicsElapsed: " + this.game.time.physicsElapsed, 100, 60);
     /*
-    starPool.forEachAlive(function(o) {
+    asteroidPool.forEachAlive(function(o) {
         // Create an array of lines that represent the four edges of each wall
         var lines = [
             new Phaser.Line(o.x - o.width / 2, o.y - o.height / 2,
@@ -167,8 +170,9 @@ function render() {
     }, this);
     */
 
-    /*starPool.forEachAlive(function(o) {
-        var circle = new Phaser.Circle(o.x, o.y, (o.radius + player.chargeShotExponential * 30) *2 );
-        game.debug.geom(circle, '#cfffff', false);
+    /*asteroidPool.forEachAlive(function(o) {
+        //var circle = new Phaser.Circle(o.x, o.y, (o.radius + player.chargeShotExponential * 30) *2 );
+        //game.debug.geom(circle, '#cfffff', false);
+        game.debug.body(o);
     }, this);*/
 }

@@ -6,7 +6,7 @@ Player.prototype.constructor = Player;
 function Player(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'ship');
     this.game = game;
-    this.anchor.set(0.5);
+    this.anchor.set(0.3, 0.5);
 
     this.chargeGraphic = midground.add(new Phaser.Sprite(this.game, 0, 0, 'bullet'));
     this.chargeGraphic.anchor.setTo(0.5);
@@ -16,11 +16,11 @@ function Player(game, x, y) {
 
     // Setup physics
     this.game.physics.arcade.enable(this);
-    this.body.bounce.setTo(2, 2);
+    this.body.bounce.setTo(1, 1);
     this.body.collideWorldBounds = true;
     this.body.onWorldBounds = new Phaser.Signal() 
     this.body.onWorldBounds.add(hitWorldBounds, this);
-    this.body.setSize(20, 20, 10, 10);
+    this.body.setSize(20, 20, 1, 10);
     this.drag = 0.93;
 
     // Variables
@@ -38,9 +38,11 @@ function Player(game, x, y) {
     // Weapon firing
     this.minChargeShotTime = 0.3;
     this.maxChargeShotTime = 0.7;
-    this.recoil = -840;
     this.bulletSpeed = 1200;
-    this.bulletHeadStart = 20;
+    this.bulletHeadStart = 30;
+    this.minRecoil = -200;
+
+    this.maxRecoil = -1200;
 
     // Energy
     this.energyMax = 100;
@@ -78,6 +80,7 @@ Player.prototype.initialValues = function() {
     this.energy = this.energyMax;
     this.energyRechargeDelayCurrent = 0;
     this.hitTimeCurrent = 0;
+    this.tint = 0xffffff;
 
     // Update HUD
     UpdateScore(0);
@@ -134,7 +137,7 @@ Player.prototype.FindCloseFuel = function() {
 Player.prototype.CheckHitTime = function() {
     if (this.hitTimeCurrent > 0) {
         var step = Math.round((1 - (this.hitTimeCurrent / this.hitTime)) * 100);
-        this.tint = Phaser.Color.interpolateColorWithRGB(this.hitTint, 0xff, 0xff, 0xff, 150, step);
+        this.tint = Phaser.Color.interpolateColorWithRGB(this.hitTint, 0xff, 0xff, 0xff, 100, step);
         this.hitTimeCurrent -= this.game.time.physicsElapsed;
 
         if (this.hitTimeCurrent <= 0) {
@@ -146,11 +149,11 @@ Player.prototype.CheckHitTime = function() {
 Player.prototype.CheckCollisions = function() {
     // Enemies
 
-    if (this.hitTimeCurrent <= 0) {
+    //if (this.hitTimeCurrent <= 0) {
         enemies.forEach(function(enemyPool) {
             game.physics.arcade.overlap(player, enemyPool, this.HitEnemy, null, this);
         }, this);
-    }
+    //}
 
     game.physics.arcade.overlap(player, fuelPool, this.CollectFuel, null, this);
 }
@@ -162,7 +165,7 @@ Player.prototype.CollectFuel = function(player, fuel) {
 }
 
 Player.prototype.HitEnemy = function(player, enemy) {
-    if (this.hitTimeCurrent > 0) return;
+    //if (this.hitTimeCurrent > 0) return;
     enemy.Hit(1000);
     this.Hit(enemy.hitDamage);
 }
@@ -294,7 +297,8 @@ Player.prototype.Fire = function() {
         // bulletPool.create(x, y, {speed: this.bulletSpeed, power: this.chargeShotExponential, rotation: this.rotation});
 
         // Propel backwards
-        var chargeRecoil = this.recoil * (0.1 + this.chargeShotExponential);
+        var chargeRecoil = this.minRecoil + (this.maxRecoil - this.minRecoil) * (this.chargeShotExponential);
+        console.log(chargeRecoil);
         this.body.velocity.x += Math.cos(this.rotation) * chargeRecoil;
         this.body.velocity.y += Math.sin(this.rotation) * chargeRecoil;
 
