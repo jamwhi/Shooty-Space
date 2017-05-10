@@ -4,7 +4,7 @@ Asteroid.prototype = Object.create(Enemy.prototype);
 Asteroid.prototype.constructor = Asteroid;
 
 function Asteroid (game) {
-    this.spriteString = 'asteroid' + Math.floor((Math.random() * 4) + 1); // random between 1 and 4 (inclusive)
+    this.spriteString = 'asteroid1' + Math.floor((Math.random() * 4) + 1); // random between 1 and 4 (inclusive)
     Enemy.call(this, game, this.spriteString);
 
     this.body.bounce.setTo(1, 1);
@@ -14,22 +14,26 @@ function Asteroid (game) {
     this.health = this.maxHealth;
     this.hitDamage = 20;
 
-    this.fuelSpawnChance = 0.7;
+    this.fuelSpawnChance = 0.2;
     this.fuelMinTier = 2;
 }
 
 Asteroid.prototype.Spawn = function(x, y, data) {
+
     Enemy.prototype.Spawn.call(this, x, y, data);
 
-
-//  1  2  3  4  5
-//  1  2  4  8  16
+    //  1  2  3  4  5
+    //  1  2  4  8  16
     this.tier = data.tier;
-    this.scale.setTo(1 / Math.pow(2, this.tier-1));
+    this.spriteString = this.spriteString = 'asteroid' + this.tier + Math.floor((Math.random() * 4) + 1); // random between 1 and 4 (inclusive)
+    this.loadTexture(this.spriteString);
+    this.body.setSize(this.width, this.height);
+    this.radius = this.width * 0.5;
+
+    //this.scale.setTo(1 / Math.pow(2, this.tier-1));
     this.maxHealth = 100 / this.tier;
     this.health = this.maxHealth;
 
-    this.radius = this.width * 0.5;
     this.rotation = Math.random() * Phaser.Math.PI2;
     this.rotSpeed = Math.random() * 4 - 2;
     this.body.velocity.x = data.x;

@@ -40,17 +40,17 @@ function Player(game, x, y) {
     this.maxChargeShotTime = 0.7;
     this.bulletSpeed = 1200;
     this.bulletHeadStart = 30;
-    this.minRecoil = -200;
+    this.minRecoil = -450;
 
-    this.maxRecoil = -1200;
+    this.maxRecoil = -1600;
 
     // Energy
     this.energyMax = 100;
-    this.energyRechargeSpeed = 0.5;
-    this.energyRechargeSpeedSlow = 0.1;
-    this.energyToShoot = 8;
-    this.energyToShootMaxCharged = 20;
-    this.energyRechargeDelay = 0.2;
+    this.energyRechargeSpeed = 0.4;
+    this.energyRechargeSpeedSlow = 0.4;
+    this.energyToShoot = 0;
+    this.energyToShootMaxCharged = 40;
+    this.energyRechargeDelay = 0.5;
 
     // Hit
     this.hitTime = 1;

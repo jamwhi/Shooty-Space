@@ -30,10 +30,20 @@ function preload() {
     
     //game.load.image('sky', 'assets/images/sky.png');
     //game.load.image('ground', 'assets/images/platform.png');
-    game.load.image('asteroid1', 'assets/images/geomstyle/asteroid11.png');
-    game.load.image('asteroid2', 'assets/images/geomstyle/asteroid12.png');
-    game.load.image('asteroid3', 'assets/images/geomstyle/asteroid13.png');
-    game.load.image('asteroid4', 'assets/images/geomstyle/asteroid14.png');
+    game.load.image('asteroid11', 'assets/images/geomstyle/asteroid11.png');
+    game.load.image('asteroid12', 'assets/images/geomstyle/asteroid12.png');
+    game.load.image('asteroid13', 'assets/images/geomstyle/asteroid13.png');
+    game.load.image('asteroid14', 'assets/images/geomstyle/asteroid14.png');
+
+    game.load.image('asteroid21', 'assets/images/geomstyle/asteroid21.png');
+    game.load.image('asteroid22', 'assets/images/geomstyle/asteroid22.png');
+    game.load.image('asteroid23', 'assets/images/geomstyle/asteroid23.png');
+    game.load.image('asteroid24', 'assets/images/geomstyle/asteroid24.png');
+
+    game.load.image('asteroid31', 'assets/images/geomstyle/asteroid31.png');
+    game.load.image('asteroid32', 'assets/images/geomstyle/asteroid32.png');
+    game.load.image('asteroid33', 'assets/images/geomstyle/asteroid33.png');
+    game.load.image('asteroid34', 'assets/images/geomstyle/asteroid34.png');
     //game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
 
     game.load.image('ship', 'assets/images/geomstyle/ship.png');
@@ -170,9 +180,12 @@ function render() {
     }, this);
     */
 
-    /*asteroidPool.forEachAlive(function(o) {
+
+    /*
+    asteroidPool.forEachAlive(function(o) {
         //var circle = new Phaser.Circle(o.x, o.y, (o.radius + player.chargeShotExponential * 30) *2 );
         //game.debug.geom(circle, '#cfffff', false);
         game.debug.body(o);
-    }, this);*/
+    }, this);
+    */
 }
