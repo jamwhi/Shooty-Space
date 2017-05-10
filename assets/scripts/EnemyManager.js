@@ -17,10 +17,10 @@ function SetupSpawners() {
 }
 
 function SetupAsteroids() {
-    asteroidPool = new Pool(game, Asteroid, 10, 'asteroids', enemies);
+    asteroidPool = new Pool(game, Asteroid, 100, 'asteroids', enemies);
     asteroidPool.enableBody = true;
 
-    AddTimer(3, SpawnAsteroid);
+    AddTimer(10, SpawnAsteroid);
     SpawnAsteroid();
 }
 
@@ -33,7 +33,7 @@ function SetupSquares() {
 
 function SpawnAsteroid() {
     spawnerPool.create(Math.random() * game.width, Math.random() * game.height, {pool: asteroidPool, data: {
-        tier: 2,
+        tier: 1,
         x: Math.random() * 200 - 100, 
         y: Math.random() * 200 - 100
     }});

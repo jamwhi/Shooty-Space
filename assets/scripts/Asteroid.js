@@ -14,15 +14,18 @@ function Asteroid (game) {
     this.health = this.maxHealth;
     this.hitDamage = 20;
 
-    this.fuelSpawnChance = 0.1;
+    this.fuelSpawnChance = 0.7;
     this.fuelMinTier = 2;
 }
 
 Asteroid.prototype.Spawn = function(x, y, data) {
     Enemy.prototype.Spawn.call(this, x, y, data);
 
+
+//  1  2  3  4  5
+//  1  2  4  8  16
     this.tier = data.tier;
-    this.scale.setTo(1 / this.tier);
+    this.scale.setTo(1 / Math.pow(2, this.tier-1));
     this.maxHealth = 100 / this.tier;
     this.health = this.maxHealth;
 
@@ -65,14 +68,19 @@ Asteroid.prototype.Explode = function(bullet, platform) {
     scoreText.text = 'Score: ' + score;
 
     if (this.tier < 3) {
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < this.tier + 1; i++) {
             asteroidPool.create(this.x, this.y, {
-                tier: 3,
+                tier: this.tier + 1,
                 x: Math.random() * 200 - 100, 
                 y: Math.random() * 200 - 100
             });
         }
-        
+    }
+
+    if (this.tier <= this.fuelMinTier) {
+        if (Math.random() < this.fuelSpawnChance) {
+            fuelPool.create(this.x, this.y, {});
+        }
     }
 
     this.kill();

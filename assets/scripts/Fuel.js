@@ -46,6 +46,7 @@ Fuel.prototype.stdReset = function(x, y) {
     this.reset(x, y);
     this.speed = 0;
     this.Movement = null;
+    this.target = null;
 }
 
 Fuel.prototype.Spawn = function(x, y, data) {
@@ -82,10 +83,11 @@ Fuel.prototype.update = function() {
         this.globs[3].position.x = -globPos; // bottom right
 
 
+
+
         if (this.Movement) {
             this.Movement();
         }
-
 
 
     }
