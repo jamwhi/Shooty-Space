@@ -70,7 +70,7 @@ function SetupHUD() {
     scoreText = hud.add(new Phaser.Text(game, 16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' }));
 
     hpBar = new Bar('hpbar', 20, 60, true);
-    energyBar = new Bar('energybar', 20, 75, false);
+    //energyBar = new Bar('energybar', 20, 75, false);
     fuelBar = new Bar('fuelbar', 20, 90, true);
     fuelBar.max = 5;
     fuelBar.SetValue(0);
@@ -78,7 +78,7 @@ function SetupHUD() {
 
 function UpdateHUD() {
     hpBar.Set(player.health);
-    energyBar.Set(player.energy);
+    //energyBar.Set(player.energy);
 }
 
 function UpdateScore(newScore) {

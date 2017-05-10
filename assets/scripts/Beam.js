@@ -59,7 +59,7 @@ function Beam (game) {
     this.minWidth = 15;
     this.minTimeAlive = 0.2;
     this.maxTimeAlive = 0.4;
-    this.minDamage = 20;
+    this.minDamage = 40;
     this.maxDamage = 100;
     this.minDamage;
 

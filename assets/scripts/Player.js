@@ -35,14 +35,19 @@ function Player(game, x, y) {
     this.maxMoveSpeed = 100;
     this.minBounceSpeed = 500;
 
+    this.maxSpeed = 300;
+    this.acceleration = 30;
+    this.slowDistance = 100;
+
     // Weapon firing
     this.minChargeShotTime = 0.3;
     this.maxChargeShotTime = 0.7;
     this.bulletSpeed = 1200;
     this.bulletHeadStart = 30;
-    this.minRecoil = -450;
-
+    this.minRecoil = 0;
     this.maxRecoil = -1600;
+
+    this.reloadTime = 0.7;
 
     // Energy
     this.energyMax = 100;
@@ -66,6 +71,10 @@ function Player(game, x, y) {
     //this.animations.add('right', [5, 6, 7, 8], 10, true);
 
     midground.add(this);
+
+
+    this.Movement = ArriveTowardsTarget;
+    this.target = game.input;
 };
 
 Player.prototype.initialValues = function() {
@@ -81,6 +90,9 @@ Player.prototype.initialValues = function() {
     this.energyRechargeDelayCurrent = 0;
     this.hitTimeCurrent = 0;
     this.tint = 0xffffff;
+    this.moving = false;
+
+    this.reloadCurrent = this.reloadTime;
 
     // Update HUD
     UpdateScore(0);
@@ -92,16 +104,20 @@ Player.prototype.stdReset = function(x, y) {
 }
 
 Player.prototype.update = function() {
+    // Check collisions with platforms
     var hitPlatform = game.physics.arcade.collide(this, platforms);
 
+    // Rotate to pointer
     this.rotation = game.physics.arcade.angleToPointer(this);
 
     this.CheckMouseInput();
 
+    // Charge shot up
     if (this.chargingShot) {
         this.KeepChargingShot();
     } 
     
+    // Recharge energy
     if (this.energyRechargeDelayCurrent <= 0) {
         if (this.energy < this.energyMax) {
             if (this.chargingShot) {
@@ -115,14 +131,25 @@ Player.prototype.update = function() {
         this.energyRechargeDelayCurrent -= this.game.time.physicsElapsed;
     }
 
-    
+    this.Weapon();
+
+    this.Movement();
+
     this.CheckHitTime();
 
-    this.ApplyDrag();
+    //this.ApplyDrag();
 
     this.CheckCollisions();
 
     this.FindCloseFuel();
+}
+
+Player.prototype.Weapon = function() {
+    this.reloadCurrent -= this.game.time.physicsElapsed;
+    if (this.reloadCurrent <= 0) {
+        this.Fire();
+        this.reloadCurrent = this.reloadTime;
+    }
 }
 
 Player.prototype.FindCloseFuel = function() {
@@ -203,16 +230,13 @@ Player.prototype.CheckMouseInput = function() {
         if (game.input.activePointer.isDown) {
             // Mouse Down
             this.mouseFired = true;
-
-            this.Fire();
-            this.StartCharge();
+            this.MouseDown();
         }
     } else {
         if (!game.input.activePointer.isDown) {
             // Mouse Up
             this.mouseFired = false;
-
-            this.Fire();
+            this.MouseUp();
         }
     }
 }
@@ -254,6 +278,22 @@ Player.prototype.CanFire = function() {
     return false;
 }
 
+
+Player.prototype.MouseDown = function() {
+    // Mouse Down
+    //this.Fire();
+    //this.StartCharge();
+
+    this.moving = true;
+}
+
+Player.prototype.MouseUp = function() {
+    // Mouse Up
+    //this.Fire();
+
+    this.moving = false;
+}
+
 Player.prototype.StartCharge = function() {
     this.chargingShot = true;
     
@@ -277,6 +317,43 @@ Player.prototype.UpdateChargeShot = function() {
     this.chargeGraphic.scale.setTo(this.chargeShotExponential);
 }
 
+
+Player.prototype.Fire = function() {
+
+
+    var closest = null;
+    var closestD = 99999;
+    var d;
+
+    enemies.forEach(function (f) {
+    
+        f.forEachAlive(function (e) {
+            if (!closest) {
+                closest = e;
+                closestD = e.position.distance(this);
+            } else {
+                d = e.position.distance(this);
+                if (d < closestD) {
+                    closest = e;
+                    closestD = d;
+                }
+            }
+            
+        }, this);
+    }, this);
+
+    if (!closest) return;
+    var angle = game.physics.arcade.angleBetween(this.position, closest.position);
+    //var vectorTo = Phaser.Point.subtract(closest.position, this.position);
+
+    var x = this.x + Math.cos(angle) * this.bulletHeadStart;
+    var y = this.y + Math.sin(angle) * this.bulletHeadStart;
+
+    beamPool.create(x, y, {direction: angle, power: this.chargeShotExponential});
+}
+
+
+/*
 Player.prototype.Fire = function() {
 
     if (this.CanFire()) {
@@ -298,7 +375,6 @@ Player.prototype.Fire = function() {
 
         // Propel backwards
         var chargeRecoil = this.minRecoil + (this.maxRecoil - this.minRecoil) * (this.chargeShotExponential);
-        console.log(chargeRecoil);
         this.body.velocity.x += Math.cos(this.rotation) * chargeRecoil;
         this.body.velocity.y += Math.sin(this.rotation) * chargeRecoil;
 
@@ -313,6 +389,7 @@ Player.prototype.Fire = function() {
     this.chargeShotExponential = 0;
 
 }
+*/
 
 Player.prototype.Hit = function(hitDamage) {
     this.health -= hitDamage;
