@@ -10,6 +10,7 @@ var asteroidPool;
 var squarePool;
 var spawnerPool;
 var fuelPool;
+var explosionPool;
 
 var player;
 var cursors;
@@ -28,6 +29,7 @@ var enemies;
 
 function preload() {
     
+game.add.plugin(Phaser.Plugin.Debug);
     //game.load.image('sky', 'assets/images/sky.png');
     //game.load.image('ground', 'assets/images/platform.png');
     game.load.image('asteroid11', 'assets/images/geomstyle/asteroid11.png');
@@ -102,11 +104,14 @@ function create() {
     bulletPool.enableBody = true;
     
     // beam group
-    beamPool = new Pool(game, Beam, 6, 'beams');
+    beamPool = new Pool(game, Beam, 3, 'beams');
 
     // fuel pool
-    fuelPool = new Pool(game, Fuel, 3, 'fuels');
-    fuelPool.create(400, 400, {});
+    fuelPool = new Pool(game, Fuel, 4, 'fuels');
+
+    // Explosion pool
+    explosionPool = new Pool(game, Explosion, 10, 'explosions');
+    
 
     // Enemies
     EnemyStart();
@@ -179,7 +184,7 @@ function render() {
         }, this);
     }, this);
     */
-
+    game.debug.text("emitters: " + explosionPool.children.length, 100, 380);
 
     /*
     asteroidPool.forEachAlive(function(o) {

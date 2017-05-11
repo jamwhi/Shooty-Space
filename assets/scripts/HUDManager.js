@@ -3,7 +3,6 @@
 function Bar(spriteName, x, y, showDiff) {
     this.bg = hud.add(new Phaser.Sprite(game, x-1, y-1, 'barbg'));
 
-    this.diffSpriteName = spriteName + "Diff";
     Phaser.Sprite.call(this, game, x, y, spriteName);
     hud.add(this);
 
@@ -12,9 +11,11 @@ function Bar(spriteName, x, y, showDiff) {
     this.max = 100;
     this.showDifference = showDiff;
 
-    this.diffBar = null;
-    this.diffScale = 0;
-
+    if (this.showDifference) {
+        this.diffBar = hud.add(new Phaser.Sprite(this.game, this.x, this.y, spriteName + "Diff"));
+        this.diffScale = 0;
+        this.diffBar.visible = false;
+    }
 
     this.current = this.max;
     this.previous = this.current;
@@ -34,9 +35,9 @@ Bar.prototype.Set = function(n) {
     this.scale.x = this.current / this.max;
 
     if (this.showDifference) {
-        if (this.diffBar != null) this.diffBar.kill();
-        this.diffBar = hud.add(new Phaser.Sprite(this.game, this.x, this.y, this.diffSpriteName));
+        this.diffBar.visible = true;
         if (this.previous < this.current) this.diffBar.anchor.x = 1;
+        else this.diffBar.anchor.x = 0;
         this.diffScale = Math.abs(this.current - this.previous) / this.max;
         this.diffBar.scale.x = this.diffScale;
         this.diffBar.x = this.x + this.scale.x * 256;
@@ -60,7 +61,7 @@ Bar.prototype.update = function() {
         }
 
         if (this.t >= this.tEnd) {
-            this.diffBar.kill();
+            this.diffBar.visible = false;
         }
     }
 }

@@ -17,7 +17,7 @@ function SetupSpawners() {
 }
 
 function SetupAsteroids() {
-    asteroidPool = new Pool(game, Asteroid, 100, 'asteroids', enemies);
+    asteroidPool = new Pool(game, Asteroid, 20, 'asteroids', enemies);
     asteroidPool.enableBody = true;
 
     AddTimer(10, SpawnAsteroid);
@@ -25,7 +25,7 @@ function SetupAsteroids() {
 }
 
 function SetupSquares() {
-    squarePool = new Pool(game, Square, 5, 'squares', enemies);
+    squarePool = new Pool(game, Square, 3, 'squares', enemies);
     squarePool.enableBody = true;
 
     AddTimer(4, SpawnSquare);
@@ -74,11 +74,11 @@ function EnemyManagerUpdate() {
     //CheckEnemyCollisions();
 }
 
-function AddTimer(t, f) {
+function AddTimer(time, funct) {
     var newTimer = {
         currentTime: 0,
-        triggerTime: t,
-        fire: f
+        triggerTime: time,
+        fire: funct
     };
     spawnTimers.push(newTimer);
 }

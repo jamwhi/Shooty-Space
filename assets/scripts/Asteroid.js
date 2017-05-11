@@ -55,18 +55,7 @@ Asteroid.prototype.update = function() {
 
 Asteroid.prototype.Explode = function(bullet, platform) {
 
-    var emitter = foreground.add(new Phaser.Particles.Arcade.Emitter(game, this.x, this.y, 10));
-    emitter.makeParticles('dot');
-    emitter.x = this.x;
-    emitter.y = this.y;
-    emitter.setAlpha(0.8, 1, 3000);
-    emitter.setScale(1, 0.1, 1, 0.1, 2000, Phaser.Easing.Quadratic.Out);
-
-    emitter.start(true, 2000, null, 10);
-
-    emitter.forEach(function(particle) {
-        particle.body.allowGravity = false;
-    }, this);
+    explosionPool.create(this.x, this.y);
 
     score += 1;
     scoreText.text = 'Score: ' + score;

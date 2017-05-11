@@ -8,7 +8,7 @@ function Player(game, x, y) {
     this.game = game;
     this.anchor.set(0.3, 0.5);
 
-    this.chargeGraphic = midground.add(new Phaser.Sprite(this.game, 0, 0, 'bullet'));
+    this.chargeGraphic = this.addChild(new Phaser.Sprite(this.game, 0, 0, 'bullet'));
     this.chargeGraphic.anchor.setTo(0.5);
 
     // Setup input (arrow keys)
@@ -46,6 +46,8 @@ function Player(game, x, y) {
     this.bulletHeadStart = 30;
     this.minRecoil = 0;
     this.maxRecoil = -1600;
+    this.chargeGraphic.x = Math.cos(this.rotation) * this.bulletHeadStart;
+    this.chargeGraphic.y = Math.sin(this.rotation) * this.bulletHeadStart;
 
     this.reloadTime = 0.7;
 
@@ -199,10 +201,10 @@ Player.prototype.HitEnemy = function(player, enemy) {
 
 Player.prototype.KeepChargingShot = function() {
 
-    var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
-    var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
-    this.chargeGraphic.x = x;
-    this.chargeGraphic.y = y;
+    //var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
+    //var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
+    //this.chargeGraphic.x = x;
+    //this.chargeGraphic.y = y;
 
     if (this.currentChargeShotTime >= this.maxChargeShotTime) {
         // Weapon is already fully charged
@@ -297,10 +299,10 @@ Player.prototype.MouseUp = function() {
 Player.prototype.StartCharge = function() {
     this.chargingShot = true;
     
-    var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
-    var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
-    this.chargeGraphic.x = x;
-    this.chargeGraphic.y = y;
+    //var x = this.x + Math.cos(this.rotation) * this.bulletHeadStart;
+    //var y = this.y + Math.sin(this.rotation) * this.bulletHeadStart;
+    //this.chargeGraphic.x = x;
+    //this.chargeGraphic.y = y;
     
     this.chargeGraphic.visible = true;
     
