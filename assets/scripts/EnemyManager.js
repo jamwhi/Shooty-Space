@@ -20,15 +20,15 @@ function SetupAsteroids() {
     asteroidPool = new Pool(game, Asteroid, 20, 'asteroids', enemies);
     asteroidPool.enableBody = true;
 
-    AddTimer(10, SpawnAsteroid);
-    SpawnAsteroid();
+    //AddTimer(10, SpawnAsteroid);
+    //SpawnAsteroid();
 }
 
 function SetupSquares() {
     squarePool = new Pool(game, Square, 3, 'squares', enemies);
     squarePool.enableBody = true;
 
-    AddTimer(4, SpawnSquare);
+    //AddTimer(4, SpawnSquare);
 }
 
 function SpawnAsteroid() {
@@ -37,11 +37,10 @@ function SpawnAsteroid() {
         x: Math.random() * 200 - 100, 
         y: Math.random() * 200 - 100
     }});
-    //asteroidPool.create(Math.random() * game.width, Math.random() * game.height, {x: Math.random() * 200 - 100, y: Math.random() * 200 - 100});
 }
 
 function SpawnSquare() {
-    squarePool.create(800, Math.random() * 600, 200);
+    squarePool.create(800, Math.random() * 600, {speed: 200});
 }
 
 

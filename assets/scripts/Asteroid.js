@@ -18,7 +18,11 @@ function Asteroid (game) {
     this.fuelMinTier = 2;
 }
 
+// data: {tier, x, y} 
 Asteroid.prototype.Spawn = function(x, y, data) {
+    if (data.tier == null) data.tier = 1;
+    if (data.x == null) data.x = 0;
+    if (data.y == null) data.y = 0;
 
     Enemy.prototype.Spawn.call(this, x, y, data);
 

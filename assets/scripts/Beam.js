@@ -35,7 +35,7 @@ function Beam (game) {
     this.timeSinceLastHit = 0;
 
     this.power = 1;
-    this.piercePower = 0.4;
+    this.piercePower = 0;//0.4;
     this.piercing = false;
     this.maxWidth = 50;
     this.minWidth = 15;

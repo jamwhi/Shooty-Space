@@ -1,6 +1,6 @@
 
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update, render: render });
 
 // Object Pools
 var platforms;
@@ -29,7 +29,8 @@ var enemies;
 
 function preload() {
     
-game.add.plugin(Phaser.Plugin.Debug);
+    game.add.plugin(Phaser.Plugin.Debug);
+
     //game.load.image('sky', 'assets/images/sky.png');
     //game.load.image('ground', 'assets/images/platform.png');
     game.load.image('asteroid11', 'assets/images/geomstyle/asteroid11.png');
@@ -72,7 +73,7 @@ game.add.plugin(Phaser.Plugin.Debug);
     game.load.image('speck', 'assets/images/speck.png');
     game.load.image('square', 'assets/images/geomstyle/square.png');
     game.load.image('blackhole', 'assets/images/blackhole.png');
-
+    
     game.load.image('empty', 'assets/images/empty.png');
 }
 
@@ -95,7 +96,6 @@ function create() {
 
     // HUD
     SetupHUD();
-
     // The player
     player = new Player(game, game.world.width / 2, game.world.height / 2);
     
@@ -115,6 +115,11 @@ function create() {
 
     // Enemies
     EnemyStart();
+
+
+    if (debugging) {
+        DebugCreate();
+    }
 }
 
 
@@ -144,10 +149,9 @@ function SetupBackground() {
     }, this);
 }
 
-
-
-
 function render() {
+
+
     /*
     game.debug.text("bullets: " + bulletPool.children.length, 100, 380 );
     game.debug.text("stars: " + asteroidPool.children.length, 100, 400 );
@@ -184,7 +188,7 @@ function render() {
         }, this);
     }, this);
     */
-    game.debug.text("emitters: " + explosionPool.children.length, 100, 380);
+    //game.debug.text("emitters: " + explosionPool.children.length, 100, 380);
 
     /*
     asteroidPool.forEachAlive(function(o) {

@@ -13,15 +13,17 @@ function Square (game) {
     this.acceleration = 5;
 }
 
+// data: {speed}
 Square.prototype.Spawn = function(x, y, data) {
+    if (data.speed == null) data.speed = 200;
+    
     Enemy.prototype.Spawn.call(this, x, y, data);
 
-    this.speed = data;
+    this.speed = data.speed;
     this.rotation = Math.random() * Phaser.Math.PI2;
     this.rotSpeed = Math.random() * 4 - 2;
     this.body.velocity.x = -this.speed;
     this.target = player;
-
     return this;
 }
 

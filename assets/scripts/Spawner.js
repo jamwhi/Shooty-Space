@@ -70,7 +70,7 @@ Spawner.prototype.update = function() {
 Spawner.prototype.IncomingAnimation = function() {
     if (this.spawnTimer < this.popInTime) {
         var t = this.spawnTimer / this.popInTime;
-        t = t * t * t * t;
+        t = t * t;
         this.scale.setTo(t);
     }
 }
