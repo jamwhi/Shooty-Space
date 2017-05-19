@@ -49,6 +49,7 @@ function preload() {
     game.load.image('asteroid34', 'assets/images/geomstyle/asteroid34.png');
     //game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
 
+    game.load.image('turret', 'assets/images/geomstyle/turret.png');
     game.load.image('ship', 'assets/images/geomstyle/ship.png');
     game.load.image('bullet', 'assets/images/bullet.png');
 
@@ -96,8 +97,7 @@ function create() {
 
     // HUD
     SetupHUD();
-    // The player
-    player = new Player(game, game.world.width / 2, game.world.height / 2);
+    
     
     // bullets group
     bulletPool = new Pool(game, Bullet, 6, 'bullets');
@@ -112,6 +112,8 @@ function create() {
     // Explosion pool
     explosionPool = new Pool(game, Explosion, 10, 'explosions');
     
+    // The player
+    player = new Player(game, game.world.width / 2, game.world.height / 2);
 
     // Enemies
     EnemyStart();
