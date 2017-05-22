@@ -12,18 +12,19 @@ function Laser (game, ship) {
     this.weaponRange = 250;
     this.damage = 50;
     this.dischargeSize = 15;
-    this.dischargeTime = 0.2;
+    this.dischargeLifeTime = 0.2;
     this.piercing = false;
 }
 
-Laser.prototype.Fire = function(target) {
+Laser.prototype.Trigger = function(target) {
     var data = {
         damage: this.damage, 
         piercing: this.piercing,
         width: this.dischargeSize,
-        timeAlive: this.dischargeTime,
-        targetGroups: enemies
+        timeAlive: this.dischargeLifeTime,
+        targetGroups: enemies,
+        rotation: this.GetAngleToTarget(target)
     }
 
-    Weapon.prototype.Fire.call(this, target, data);
+    this.Fire(this.GetDischargePoint(), data);
 }

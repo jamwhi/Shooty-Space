@@ -12,29 +12,31 @@ function Shotgun (game, ship) {
     this.weaponRange = 200;
     this.damage = 30;
     this.dischargeSize = 0.2;
-    this.dischargeTime = 0.4;
+    this.dischargeLifeTime = 0.4;
     this.piercing = false;
     this.speed = 750;
 }
 
 
-Shotgun.prototype.Fire = function(target) {
+Shotgun.prototype.Trigger = function(target) {
     var data = {
         damage: this.damage, 
         piercing: this.piercing,
         size: this.dischargeSize,
-        timeAlive: this.dischargeTime,
+        timeAlive: this.dischargeLifeTime,
         targetGroups: enemies,
-        speed: this.speed
+        speed: this.speed,
+        rotation: this.GetAngleToTarget(target)
     }
     
-    Weapon.prototype.Fire.call(this, target, data);
+    var p = this.GetDischargePoint();
+    this.Fire(p, data);
     data.rotation += 0.15;
-    Weapon.prototype.Fire.call(this, target, data);
+    this.Fire(p, data);
     data.rotation += 0.15;
-    Weapon.prototype.Fire.call(this, target, data);
+    this.Fire(p, data);
     data.rotation -= 0.45;
-    Weapon.prototype.Fire.call(this, target, data);
+    this.Fire(p, data);
     data.rotation -= 0.15;
-    Weapon.prototype.Fire.call(this, target, data);
+    this.Fire(p, data);
 }

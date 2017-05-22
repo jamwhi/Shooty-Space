@@ -40,7 +40,7 @@ function Player(game, x, y) {
     this.slowDistance = 80;
 
     // Weapons
-    this.weapon = new Shotgun(this.game, this);
+    this.weapon = new Rapidgun(this.game, this);
 
     /*
     // Energy
@@ -110,8 +110,6 @@ Player.prototype.update = function() {
     
     //this.RechargeEnergy();
 
-    //this.CheckWeapon();
-
     this.Movement();
 
     this.CheckHitTime();
@@ -121,10 +119,6 @@ Player.prototype.update = function() {
     this.CheckCollisions();
 
     this.FindCloseFuel();
-}
-
-Player.prototype.CheckWeapon = function() {
-    //this.weapon.Check();
 }
 
 Player.prototype.FindCloseFuel = function() {

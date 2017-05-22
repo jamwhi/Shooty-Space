@@ -24,7 +24,7 @@ function Weapon (game, spriteData, ship) {
     this.weaponRange = 250;
     this.damage = 50;
     this.dischargeSize = 15;
-    this.dischargeTime = 0.2;
+    this.dischargeLifeTime = 0.2;
     this.piercing = false;
 
     //this.recoil = -1600;
@@ -62,11 +62,9 @@ Weapon.prototype.update = function() {
     // Check if the weapon can shoot (has cooled down / reloaded). If so, check for valid targets
     if (this.reloadCurrent <= 0) {
         this.CheckForTargets();
-    } else {
-        this.reloadCurrent -= this.game.time.physicsElapsed;
     }
 
-
+    
     // Rotate towards current target if there is one
     if (this.currentTarget != null) {
         if (this.currentTarget.alive == true || this.rotateThisTick) {
@@ -77,6 +75,15 @@ Weapon.prototype.update = function() {
         } else {
             this.currentTarget = null;
         }
+    }
+
+    // Fire at target if able
+    if (this.reloadCurrent <= 0 && this.currentTarget != null) {
+        console.log("1");
+        this.reloadCurrent = this.reloadTime;
+        this.Trigger(this.currentTarget);
+    } else {
+        this.reloadCurrent -= this.game.time.physicsElapsed;
     }
 }
 
@@ -108,12 +115,12 @@ Weapon.prototype.CheckForTargets = function() {
     if (closest && closestD < this.weaponRange) {
         this.currentTarget = closest;
         this.rotateThisTick = true;
-        this.reloadCurrent = this.reloadTime;
-        this.Fire(closest);
+    } else {
+        this.currentTarget = null;
     }
 }
 
-Weapon.prototype.Fire = function(target, data) {
+Weapon.prototype.Trigger = function(target, data) {
     
     //var vectorTo = Phaser.Point.subtract(target.position, this.position);
     
@@ -132,7 +139,7 @@ Weapon.prototype.Fire = function(target, data) {
             damage: this.damage, 
             piercing: this.piercing,
             width: this.dischargeSize,
-            timeAlive: this.dischargeTime,
+            timeAlive: this.dischargeLifeTime,
             targetGroups: enemies
         }
     }*/
@@ -141,10 +148,19 @@ Weapon.prototype.Fire = function(target, data) {
     if (data.rotation == null) {
         data.rotation = this.GetAngleToTarget(target);
     }
-    var x = this.world.x + Math.cos(data.rotation) * this.fireOffset;
-    var y = this.world.y + Math.sin(data.rotation) * this.fireOffset;
 
-    this.dischargePool.create(x, y, data);
+    this.Fire(data);
+}
+
+Weapon.prototype.Fire = function(p, data) {
+    this.dischargePool.create(p.x, p.y, data);
+}
+
+Weapon.prototype.GetDischargePoint = function() {
+    var x = this.world.x + Math.cos(this.rotation) * this.fireOffset;
+    var y = this.world.y + Math.sin(this.rotation) * this.fireOffset;
+
+    return {x, y};
 }
 
 Weapon.prototype.GetAngleToTarget = function(target) {
