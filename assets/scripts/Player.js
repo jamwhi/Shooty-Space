@@ -40,7 +40,8 @@ function Player(game, x, y) {
     this.slowDistance = 80;
 
     // Weapons
-    this.weapon = new Rapidgun(this.game, this);
+    //this.weapon = new Rapidgun(this.game, this);
+    this.weapon = null;
 
     /*
     // Energy
@@ -158,6 +159,11 @@ Player.prototype.CollectFuel = function(player, fuel) {
     this.fuel++;
     fuelBar.Set(this.fuel);
     fuel.Collect();
+
+    if (this.fuel >= this.maxFuel) {
+        // Level up
+        
+    }
 }
 
 Player.prototype.HitEnemy = function(player, enemy) {
@@ -222,6 +228,10 @@ Player.prototype.Hit = function(hitDamage) {
 }
 
 
+
+Player.prototype.Equip = function(newEq) {
+    this.weapon = newEq;
+}
 
 
 

@@ -86,3 +86,32 @@ function UpdateScore(newScore) {
     score = newScore;
     scoreText.text = 'Score: ' + score;
 }
+
+
+function ShowUpgradeScreen() {
+    for (var i = 0; i < 3; i++) {
+        ShowUpgradeOption(i);
+    }
+}
+
+function ShowUpgradeOption(position) {
+    console.log("1");
+    var w = 200;
+    var h = 50;
+    var gap = 15;
+
+    var graphics = game.add.graphics(game.width / 2, 250 + position*(h + gap));
+    graphics.beginFill(0xFFFFFF, 0.5);
+    graphics.lineStyle(2, 0xffffff, 1);
+    graphics.drawRoundedRect(-w/2, -h/2, w, h, 3);
+    hud.add(graphics);
+
+    
+    graphics.scale.x = 0.05;
+    graphics.scale.y = 0.1;
+    console.log("2");
+    var t = game.add.tween(graphics.scale).to({y: 1}, 400, "Quart.easeOut");
+    t.chain(game.add.tween(graphics.scale).to({x: 1}, 400, "Quart.easeOut"));
+    t.start();
+    console.log("3");
+}
