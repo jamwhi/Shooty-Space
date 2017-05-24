@@ -162,7 +162,7 @@ Player.prototype.CollectFuel = function(player, fuel) {
 
     if (this.fuel >= this.maxFuel) {
         // Level up
-        
+        ShowUpgradeScreen();
     }
 }
 

@@ -122,8 +122,6 @@ function create() {
     if (debugging) {
         DebugCreate();
     }
-
-    ShowUpgradeScreen()
 }
 
 

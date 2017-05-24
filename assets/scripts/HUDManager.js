@@ -75,6 +75,9 @@ function SetupHUD() {
     fuelBar = new Bar('fuelbar', 20, 90, true);
     fuelBar.max = 5;
     fuelBar.SetValue(0);
+
+    CreateUpgradeScreen();
+    HideUpgradeScreen();
 }
 
 function UpdateHUD() {
@@ -88,30 +91,103 @@ function UpdateScore(newScore) {
 }
 
 
-function ShowUpgradeScreen() {
+var upgradeScreen;
+
+function CreateUpgradeScreen() {
+    upgradeScreen = game.add.sprite(game.width / 2, game.height / 2, 'empty');
+    upgradeScreen.upgrades = [];
     for (var i = 0; i < 3; i++) {
-        ShowUpgradeOption(i);
+        var newUpgrade = CreateUpgradeOption(i - 1, i);
+        upgradeScreen.upgrades.push(newUpgrade)
+        upgradeScreen.addChild(newUpgrade);
     }
 }
 
-function ShowUpgradeOption(position) {
-    console.log("1");
-    var w = 200;
-    var h = 50;
-    var gap = 15;
+function ShowUpgradeScreen() {
+    upgradeScreen.visible = true;
+    upgradeScreen.upgrades.forEach(function(u) {
+        u.t1.start();
+    }, this);
+}
 
-    var graphics = game.add.graphics(game.width / 2, 250 + position*(h + gap));
+function HideUpgradeScreen() {
+    upgradeScreen.visible = false;
+}
+
+function CreateUpgradeOption(yPos, listNum) {
+
+    // Variables
+    var w = 200;
+    var h = 65;
+    var gap = 15;
+    var x = 0;
+    var y = yPos*(h + gap);
+
+    var upgrade = game.add.sprite(x, y, 'empty');
+    upgrade.type = listNum;
+
+    // Graphic (this can be removed / replaced if there is a background for the sprite itself above (upgrade))
+    var graphics = game.add.graphics(0, 0);
     graphics.beginFill(0xFFFFFF, 0.5);
     graphics.lineStyle(2, 0xffffff, 1);
     graphics.drawRoundedRect(-w/2, -h/2, w, h, 3);
-    hud.add(graphics);
+    upgrade.addChild(graphics);
+    upgrade.g = graphics;
+
+
+    // Text
+    var text = hud.add(new Phaser.Text(game, 0, 0, 'THING ' + upgrade.type, { fontSize: '36px', fill: '#ff0000' }));
+    text.anchor.setTo(0.5, 0.5);
+    //var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: sprite.width, align: "center", backgroundColor: "#ffff00" };
+    upgrade.addChild(text);
+
+
+    // Mask
+    var mask = game.add.graphics(0,0);
+    mask.beginFill(0xFFFFFF, 1);
+    mask.drawRoundedRect(-w/2, -h/2, w, h, 3);
+    graphics.addChild(mask);
+    text.mask = mask;
+    upgrade.mask = mask; // If using background for sprite, this sets up the mask for it too
+
+
+
+    // Animation / tween
+    graphics.scale.setTo(0.05, 0.1);
+    var delay = listNum * 300;
+    var t1 = game.add.tween(graphics.scale).to({y: 1}, 500, "Quart.easeOut", false, delay);
+    var t2 = game.add.tween(graphics.scale).to({x: 1}, 400, "Quart.easeOut");
 
     
-    graphics.scale.x = 0.05;
-    graphics.scale.y = 0.1;
-    console.log("2");
-    var t = game.add.tween(graphics.scale).to({y: 1}, 400, "Quart.easeOut");
-    t.chain(game.add.tween(graphics.scale).to({x: 1}, 400, "Quart.easeOut"));
-    t.start();
-    console.log("3");
+    t2.onComplete.add(function() {
+        // Make clickable
+        upgrade.inputEnabled = true;
+
+        upgrade.events.onInputOver.add(function() {
+            this.g.tint = 0xa0aaaa;
+        }, upgrade);
+        upgrade.events.onInputDown.add(function() {
+            this.g.tint = 0x777777;
+        }, upgrade);
+        upgrade.events.onInputOut.add(function() {
+            this.g.tint = 0xeeeeee;
+        }, upgrade);
+        upgrade.events.onInputUp.add(SelectUpgrade, upgrade);
+    }, this);
+
+    t1.chain(t2);
+    upgrade.t1 = t1;
+
+
+    return upgrade;
+}
+
+function SelectUpgrade() {
+    this.g.tint = 0xeeeeee;
+    
+    if (!this.input.pointerOver())
+        return;
+    
+    console.log(this.type);
+    HideUpgradeScreen();
 }
