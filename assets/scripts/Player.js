@@ -97,7 +97,7 @@ Player.prototype.stdReset = function(x, y) {
 
 Player.prototype.update = function() {
     if (paused) return;
-    
+
     // Check collisions with platforms
     var hitPlatform = game.physics.arcade.collide(this, platforms);
 
@@ -108,7 +108,7 @@ Player.prototype.update = function() {
 
     // Charge shot up
     if (this.chargingShot) {
-        weapon.KeepChargingShot();
+        this.weapon.KeepChargingShot();
     } 
     
     //this.RechargeEnergy();
@@ -217,7 +217,7 @@ function hitWorldBounds(sprite, up, down, left, right) {
 Player.prototype.StartCharge = function() {
     this.chargingShot = true;
 
-    //weapon.StartCharge();
+    //this.weapon.StartCharge();
 }
 
 

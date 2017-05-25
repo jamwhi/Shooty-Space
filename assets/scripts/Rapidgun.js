@@ -4,7 +4,7 @@ Rapidgun.prototype = Object.create(Weapon.prototype);
 Rapidgun.prototype.constructor = Rapidgun;
 
 function Rapidgun (game, ship) {
-    Weapon.call(this, game, 'turret', ship);
+    Weapon.call(this, game, 'turret1', ship);
     this.dischargePool = bulletPool;
     
     this.fireOffset = 20;

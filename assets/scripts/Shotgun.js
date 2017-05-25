@@ -4,7 +4,7 @@ Shotgun.prototype = Object.create(Weapon.prototype);
 Shotgun.prototype.constructor = Shotgun;
 
 function Shotgun (game, ship) {
-    Weapon.call(this, game, 'turret', ship);
+    Weapon.call(this, game, 'turret3', ship);
     this.dischargePool = bulletPool;
     
     this.fireOffset = 20;

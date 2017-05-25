@@ -58,6 +58,9 @@ function Weapon (game, spriteData, ship) {
 }
 
 Weapon.prototype.update = function() {
+
+    if (paused) return;
+
     this.position = this.ship.position;
     // Check if the weapon can shoot (has cooled down / reloaded). If so, check for valid targets
     if (this.reloadCurrent <= 0) {
@@ -79,7 +82,6 @@ Weapon.prototype.update = function() {
 
     // Fire at target if able
     if (this.reloadCurrent <= 0 && this.currentTarget != null) {
-        console.log("1");
         this.reloadCurrent = this.reloadTime;
         this.Trigger(this.currentTarget);
     } else {

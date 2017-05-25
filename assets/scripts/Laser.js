@@ -4,7 +4,7 @@ Laser.prototype = Object.create(Weapon.prototype);
 Laser.prototype.constructor = Laser;
 
 function Laser (game, ship) {
-    Weapon.call(this, game, 'turret', ship);
+    Weapon.call(this, game, 'turret2', ship);
     this.dischargePool = beamPool;
 
     this.fireOffset = 20;
