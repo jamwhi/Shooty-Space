@@ -87,10 +87,10 @@ function create() {
     game.physics.arcade.gravity.y = 0;
     
     // Groups
-    background = game.add.group();
-    midground = game.add.group();
-    foreground = game.add.group();
-    hud = game.add.group();
+    background = game.add.group(game.world, 'Background');
+    midground = game.add.group(game.world, 'Midground');
+    foreground = game.add.group(game.world, 'Foreground');
+    hud = game.add.group(game.world, 'HUD');
 
     // Background
     SetupBackground();

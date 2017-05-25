@@ -77,7 +77,7 @@ function SetupHUD() {
     fuelBar.SetValue(0);
 
     CreateUpgradeScreen();
-    HideUpgradeScreen();
+    ShowUpgradeScreen();
 }
 
 function UpdateHUD() {
@@ -94,100 +94,136 @@ function UpdateScore(newScore) {
 var upgradeScreen;
 
 function CreateUpgradeScreen() {
-    upgradeScreen = game.add.sprite(game.width / 2, game.height / 2, 'empty');
-    upgradeScreen.upgrades = [];
+    upgradeScreen = game.add.group(hud, 'UpgradeScreen');
+    upgradeScreen.position.setTo(game.width / 2, game.height / 2 - 80);
+
     for (var i = 0; i < 3; i++) {
-        var newUpgrade = CreateUpgradeOption(i - 1, i);
-        upgradeScreen.upgrades.push(newUpgrade)
-        upgradeScreen.addChild(newUpgrade);
+        var gap = 15;
+        var x = 0;
+        var y = 0;
+        if (i > 0) {
+            y = upgradeScreen.getAt(i-1).y + upgradeScreen.getAt(i-1).bg.bottom + gap;
+        }
+        upgradeScreen.addChild(new UpgradeOption(x, y, 'empty', i));
     }
 }
 
 function ShowUpgradeScreen() {
     upgradeScreen.visible = true;
-    upgradeScreen.upgrades.forEach(function(u) {
-        u.t1.start();
+    var i = 0;
+    var delay = 300;
+    
+    // Pause the game
+
+
+    // Show each of the upgrade options
+    upgradeScreen.forEach(function(up) {
+        up.Show(i*delay);
+        i++;
     }, this);
 }
 
-function HideUpgradeScreen() {
-    upgradeScreen.visible = false;
+function HideUpgradeScreen(selected) {
+    
+    var delay = 500;
+
+    // Hide each of the upgrade options
+    upgradeScreen.forEach(function(up) {
+        up.Hide ((up == selected) * delay)
+    }, this);
+
+    // After 1 second, make the upgrade screen invisible
+    var timer = game.time.create(true);
+    timer.add(1000, function() {
+
+        upgradeScreen.visible = false;
+
+        // Unpause the game
+
+        
+    });
+    timer.start();
 }
 
-function CreateUpgradeOption(yPos, listNum) {
+function UpgradeOption(x, y, spriteName, type) {
+    Phaser.Sprite.call(this, game, x, y, spriteName);
 
-    // Variables
+    this.type = type;
     var w = 200;
     var h = 65;
-    var gap = 15;
-    var x = 0;
-    var y = yPos*(h + gap);
-
-    var upgrade = game.add.sprite(x, y, 'empty');
-    upgrade.type = listNum;
 
     // Graphic (this can be removed / replaced if there is a background for the sprite itself above (upgrade))
-    var graphics = game.add.graphics(0, 0);
-    graphics.beginFill(0xFFFFFF, 0.5);
-    graphics.lineStyle(2, 0xffffff, 1);
-    graphics.drawRoundedRect(-w/2, -h/2, w, h, 3);
-    upgrade.addChild(graphics);
-    upgrade.g = graphics;
-
+    this.bg = game.add.graphics(0, 0);
+    this.bg.beginFill(0xFFFFFF, 0.5);
+    this.bg.lineStyle(2, 0xffffff, 1);
+    this.bg.drawRoundedRect(-w/2, -h/2, w, h, 3);
+    this.addChild(this.bg);
 
     // Text
-    var text = hud.add(new Phaser.Text(game, 0, 0, 'THING ' + upgrade.type, { fontSize: '36px', fill: '#ff0000' }));
-    text.anchor.setTo(0.5, 0.5);
     //var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: sprite.width, align: "center", backgroundColor: "#ffff00" };
-    upgrade.addChild(text);
+    this.text = hud.add(new Phaser.Text(game, 0, 0, 'THING ' + this.type, { fontSize: '36px', fill: '#ff0000' }));
+    this.text.anchor.setTo(0.5, 0.5);
+    this.addChild(this.text);
 
 
     // Mask
-    var mask = game.add.graphics(0,0);
-    mask.beginFill(0xFFFFFF, 1);
-    mask.drawRoundedRect(-w/2, -h/2, w, h, 3);
-    graphics.addChild(mask);
-    text.mask = mask;
-    upgrade.mask = mask; // If using background for sprite, this sets up the mask for it too
+    this.contentMask = game.add.graphics(0,0);
+    this.contentMask.beginFill(0xFFFFFF, 1);
+    this.contentMask.drawRoundedRect(-w/2, -h/2, w, h, 3);
+    this.bg.addChild(this.contentMask);
+    this.text.mask = this.contentMask;
+    this.mask = this.contentMask; // If using background for sprite, this sets up the mask for it too
 
-
-
-    // Animation / tween
-    graphics.scale.setTo(0.05, 0.1);
-    var delay = listNum * 300;
-    var t1 = game.add.tween(graphics.scale).to({y: 1}, 500, "Quart.easeOut", false, delay);
-    var t2 = game.add.tween(graphics.scale).to({x: 1}, 400, "Quart.easeOut");
-
-    
-    t2.onComplete.add(function() {
-        // Make clickable
-        upgrade.inputEnabled = true;
-
-        upgrade.events.onInputOver.add(function() {
-            this.g.tint = 0xa0aaaa;
-        }, upgrade);
-        upgrade.events.onInputDown.add(function() {
-            this.g.tint = 0x777777;
-        }, upgrade);
-        upgrade.events.onInputOut.add(function() {
-            this.g.tint = 0xeeeeee;
-        }, upgrade);
-        upgrade.events.onInputUp.add(SelectUpgrade, upgrade);
-    }, this);
-
-    t1.chain(t2);
-    upgrade.t1 = t1;
-
-
-    return upgrade;
+    this.Buttonise();
 }
 
-function SelectUpgrade() {
-    this.g.tint = 0xeeeeee;
-    
-    if (!this.input.pointerOver())
-        return;
-    
+UpgradeOption.prototype = Object.create(Phaser.Sprite.prototype);
+UpgradeOption.prototype.constructor = UpgradeOption;
+
+
+UpgradeOption.prototype.Show = function(delay) {
+    this.bg.scale.setTo(0.05, 0);
+    var t1 = game.add.tween(this.bg.scale).to({y: 1}, 500, "Quart.easeOut", false, delay);
+    var t2 = game.add.tween(this.bg.scale).to({x: 1}, 400, "Quart.easeOut");
+    t1.chain(t2);
+    t2.onComplete.add(function() {
+        this.inputEnabled = true;
+    }, this);
+    t1.start();
+}
+
+UpgradeOption.prototype.Hide = function(delay) {
+    this.bg.scale.setTo(1, 1);
+    this.inputEnabled = false;
+
+    var t1 = game.add.tween(this.bg.scale).to({x: 0, y: 0}, 400, "Quart.easeIn", true, delay);
+    //var t2 = game.add.tween(this.bg.scale).to({y: 0}, 500, "Quart.easeIn", false, delay);
+    //t1.chain(t2);
+    //t1.start();
+    //t2.start();
+}
+
+UpgradeOption.prototype.Select = function() {
     console.log(this.type);
-    HideUpgradeScreen();
+    HideUpgradeScreen(this);
+}
+
+UpgradeOption.prototype.Buttonise = function() {
+    // Make clickable
+
+    this.events.onInputOver.add(function() {
+        this.bg.tint = 0xa0aaaa;
+    }, this);
+    this.events.onInputDown.add(function() {
+        this.bg.tint = 0x777777;
+    }, this);
+    this.events.onInputOut.add(function() {
+        this.bg.tint = 0xeeeeee;
+    }, this);
+    this.events.onInputUp.add(function() {
+        this.bg.tint = 0xeeeeee;
+        if (!this.input.pointerOver())
+            return;
+        this.Select();
+    }, this);
 }
