@@ -114,7 +114,7 @@ function ShowUpgradeScreen() {
     var delay = 300;
     
     // Pause the game
-
+    PauseGame();
 
     // Show each of the upgrade options
     upgradeScreen.forEach(function(up) {
@@ -139,8 +139,8 @@ function HideUpgradeScreen(selected) {
         upgradeScreen.visible = false;
 
         // Unpause the game
+        UnpauseGame();
 
-        
     });
     timer.start();
 }

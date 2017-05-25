@@ -39,22 +39,11 @@ Asteroid.prototype.Spawn = function(x, y, data) {
     this.health = this.maxHealth;
 
     this.rotation = Math.random() * Phaser.Math.PI2;
-    this.rotSpeed = Math.random() * 4 - 2;
+    this.body.angularVelocity = Math.random() * 200 - 100;
     this.body.velocity.x = data.x;
     this.body.velocity.y = data.y;
     
     return this;
-}
-
-Asteroid.prototype.update = function() {
-    if (this.alive) {
-        Enemy.prototype.update.call(this);
-
-        //game.physics.arcade.overlap(this, platforms, this.Explode, null, this);
-        //game.physics.arcade.overlap(this, stars, this.HitAsteroid, null, this);
-        this.rotation += this.rotSpeed * this.game.time.physicsElapsed;
-        //this.CheckBounds();
-    }
 }
 
 Asteroid.prototype.Explode = function(bullet, platform) {

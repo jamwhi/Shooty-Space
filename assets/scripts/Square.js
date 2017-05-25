@@ -21,23 +21,19 @@ Square.prototype.Spawn = function(x, y, data) {
 
     this.speed = data.speed;
     this.rotation = Math.random() * Phaser.Math.PI2;
-    this.rotSpeed = Math.random() * 4 - 2;
+    this.body.angularVelocity = Math.random() * 100 + 200;
+    if (Math.random() <= 0.5) this.body.angularVelocity *= -1;
     this.body.velocity.x = -this.speed;
     this.target = player;
     return this;
 }
 
-Square.prototype.update = function() {
-    if (this.alive) {
-        Enemy.prototype.update.call(this);
+Square.prototype.MoreUpdate = function() {
+    // move towards player
 
-        // move towards player
+    this.CheckBounds();
 
-        this.rotation += this.rotSpeed * this.game.time.physicsElapsed;
-        this.CheckBounds();
-
-        this.Movement();
-    }
+    this.Movement();
 }
 
 Square.prototype.Movement = TurnTowardsTarget;

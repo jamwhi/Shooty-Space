@@ -49,7 +49,7 @@ Spawner.prototype.SpawnEnemy = function() {
 }
 
 Spawner.prototype.update = function() {
-    if (this.alive) {
+    if (this.alive && !paused) {
         this.spawnTimer += this.game.time.physicsElapsed;
         this.rotation += this.rotSpeed * this.game.time.physicsElapsed;
 

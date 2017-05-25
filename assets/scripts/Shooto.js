@@ -27,6 +27,8 @@ var midground;
 var background;
 var enemies;
 
+var paused = false;
+
 function preload() {
     
     game.add.plugin(Phaser.Plugin.Debug);
@@ -128,7 +130,20 @@ function create() {
 function update() {
     //game.physics.arcade.collide(stars, platforms);
     UpdateHUD();
-    EnemyManagerUpdate();
+
+    if (!paused) {
+        EnemyManagerUpdate();
+    }
+}
+
+function PauseGame() {
+    this.game.physics.arcade.isPaused = true
+    paused = true;
+}
+
+function UnpauseGame() {
+    this.game.physics.arcade.isPaused = false;
+    paused = false;
 }
 
 function SetupBackground() {

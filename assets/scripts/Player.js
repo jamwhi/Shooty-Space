@@ -96,6 +96,8 @@ Player.prototype.stdReset = function(x, y) {
 }
 
 Player.prototype.update = function() {
+    if (paused) return;
+    
     // Check collisions with platforms
     var hitPlatform = game.physics.arcade.collide(this, platforms);
 
@@ -163,6 +165,8 @@ Player.prototype.CollectFuel = function(player, fuel) {
     if (this.fuel >= this.maxFuel) {
         // Level up
         ShowUpgradeScreen();
+        this.fuel = 0;
+        fuelBar.Set(this.fuel);
     }
 }
 

@@ -62,7 +62,7 @@ Fuel.prototype.Spawn = function(x, y, data) {
 }
 
 Fuel.prototype.update = function() {
-    if (this.alive) {
+    if (this.alive && !paused) {
 
         // update globs animation
         this.glob2T += this.glob2Speed * this.game.time.physicsElapsed * this.glob2Dir;

@@ -38,9 +38,15 @@ Enemy.prototype.Spawn = function(x, y, data) {
 }
 
 Enemy.prototype.update = function() {
-    if (this.alive) {
+    if (this.alive && !paused) {
         this.CheckHitTime();
+
+        this.MoreUpdate();
     }
+}
+
+Enemy.prototype.MoreUpdate = function() {
+    // function to overload
 }
 
 Enemy.prototype.CheckBounds = function() {
