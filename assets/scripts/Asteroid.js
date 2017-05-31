@@ -36,6 +36,7 @@ Asteroid.prototype.Spawn = function(x, y, data) {
 
     //this.scale.setTo(1 / Math.pow(2, this.tier-1));
     this.maxHealth = 100 / this.tier;
+
     this.health = this.maxHealth;
 
     this.rotation = Math.random() * Phaser.Math.PI2;

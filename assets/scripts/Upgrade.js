@@ -11,6 +11,9 @@ Upgrade.prototype.Deliver = function() {
     player.Equip(new this.equipment(game, player));
 }
 
+
+
+
 function Upgrade_Shotgun() {
     Upgrade.call(this, 'turret3');
 
@@ -24,7 +27,7 @@ Upgrade_Shotgun.prototype.constructor = Upgrade_Shotgun;
 function Upgrade_Rapid() {
     Upgrade.call(this, 'turret1');
 
-    this.infoText = "Rapid";
+    this.infoText = "Rapidgun";
     this.equipment = Rapidgun;
 }
 Upgrade_Rapid.prototype = Object.create(Upgrade.prototype);
