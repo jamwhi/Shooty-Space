@@ -40,7 +40,7 @@ function Player(game, x, y) {
     this.slowDistance = 80;
 
     // Weapons
-    //this.weapon = new Rapidgun(this.game, this);
+    this.weapon = new Rapidgun(this.game, this);
     this.weapon = null;
 
     /*
