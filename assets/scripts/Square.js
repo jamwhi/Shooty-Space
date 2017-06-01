@@ -20,6 +20,7 @@ Square.prototype.Spawn = function(x, y, data) {
     Enemy.prototype.Spawn.call(this, x, y, data);
 
     this.speed = data.speed;
+    this.maxSpeed = this.speed;
     this.rotation = Math.random() * Phaser.Math.PI2;
     this.body.angularVelocity = Math.random() * 100 + 200;
     if (Math.random() <= 0.5) this.body.angularVelocity *= -1;
