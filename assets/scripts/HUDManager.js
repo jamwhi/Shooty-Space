@@ -77,7 +77,7 @@ function SetupHUD() {
     fuelBar.SetValue(0);
 
     CreateUpgradeScreen();
-    ShowUpgradeScreen();
+    //ShowUpgradeScreen();
 }
 
 function UpdateHUD() {
@@ -116,6 +116,8 @@ function CreateUpgradeScreen() {
     upgradeScreen.addChild(new UpgradeOption(x, y, 'empty', Upgrade_Laser));
     y = upgradeScreen.getAt(1).y + upgradeScreen.getAt(1).bg.bottom + gap;
     upgradeScreen.addChild(new UpgradeOption(x, y, 'empty', Upgrade_Shotgun));
+
+    upgradeScreen.visible = false;
 }
 
 function ShowUpgradeScreen() {
