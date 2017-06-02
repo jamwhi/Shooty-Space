@@ -181,8 +181,15 @@ function render() {
     //game.debug.text("Charge: " + Math.round(player.chargeShotExponential * 100) / 100, 100, 80);
     //game.debug.text("HP: " + player.health, 100, 100);
     //game.debug.body(player);
+
+    /*
+    if (debugPos != null) {
+        //console.log(debugPos);
+        var circle = new Phaser.Circle(debugPos.x, debugPos.y, 10);
+        game.debug.geom(circle, 'rgba(0,255,0,1)');
+    }
+    */
     
-    //game.debug.geom(closePoint, 'rgba(255,0,0,1)');
     //somelines.forEach(function(line) {
     //        game.debug.geom(line, 'rgba(255,0,0,1)' ) ;
     //}, this);

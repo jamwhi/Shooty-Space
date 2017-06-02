@@ -29,9 +29,10 @@ function SetupSquares() {
 }
 
 function SetupTimers() {
-    AddTimer(4, SpawnSquare);
-    AddTimer(10, SpawnAsteroid);
-    SpawnAsteroid();
+    //AddTimer(4, SpawnSquare);
+    //AddTimer(10, SpawnAsteroid);
+    //SpawnAsteroid();
+    SpawnSquare();
 }
 
 
