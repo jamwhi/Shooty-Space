@@ -51,9 +51,9 @@ Bullet.prototype.update = function() {
 
         this.time += this.game.time.physicsElapsed;
 
-        var t = this.time / this.timeAlive;
-        t = t * t;
-        this.body.velocity.setMagnitude((1 - t) * this.speed);
+        //var t = this.time / this.timeAlive;
+        //t = t * t;
+        //this.body.velocity.setMagnitude((1 - t) * this.speed);
 
 
         if (this.time >= this.timeAlive) {
