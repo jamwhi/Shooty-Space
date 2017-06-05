@@ -8,6 +8,7 @@ var bulletPool;
 var beamPool;
 var asteroidPool;
 var squarePool;
+var shooterPool;
 var spawnerPool;
 var fuelPool;
 var explosionPool;

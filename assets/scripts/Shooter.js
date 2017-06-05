@@ -5,7 +5,7 @@ Shooter.prototype.constructor = Shooter;
 
 function Shooter (game) {
     Enemy.call(this, game, 'turret3');
-
+    
     this.body.bounce.setTo(1, 1);
     this.body.collideWorldBounds = true;
 

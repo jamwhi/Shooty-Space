@@ -31,11 +31,16 @@ function SetupSquares() {
     squarePool.enableBody = true;
 }
 
+function SetupShooters() {
+    shooterPool = new Pool(game, Shooter, 3, 'shooters', enemies);
+    shooterPool.enableBody = true;
+}
+
 function SetupTimers() {
     //AddTimer(4, SpawnSquare);
     //AddTimer(10, SpawnAsteroid);
     //SpawnAsteroid();
-    SpawnSquare();
+    SpawnShooter();
 }
 
 
@@ -76,7 +81,9 @@ function SpawnSquare() {
     squarePool.create(800, Math.random() * 600, {speed: 200});
 }
 
-
+function SpawnShooter() {
+    shooterPool.create(800, Math.random() * 600, {speed: 200});
+}
 
 function EnemyManagerUpdate() {
     CheckTimers();
