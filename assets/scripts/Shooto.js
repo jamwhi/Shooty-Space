@@ -117,13 +117,15 @@ function create() {
     explosionPool = new Pool(game, Explosion, 10, 'explosions');
     
     // Enemies
-    EnemyStart();
+    SetupEnemies();
     
     // The player
     friendlies = game.add.group(game.world, "Friendlies");
     player = new Player(game, game.world.width / 2, game.world.height / 2);
     friendlies.add(player);
 
+    // Enemies
+    EnemyStart();
 
 
     if (debugging) {
