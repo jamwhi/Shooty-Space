@@ -5,7 +5,7 @@ Shooter.prototype.constructor = Shooter;
 
 function Shooter (game) {
     Enemy.call(this, game, 'turret3');
-    
+
     this.body.bounce.setTo(1, 1);
     this.body.collideWorldBounds = true;
 
@@ -13,8 +13,18 @@ function Shooter (game) {
     this.health = this.maxHealth;
     this.hitDamage = 20;
 
-    this.weapon = new Rapidgun(this.game, this);
+    this.weapon = new Rapidgun(this.game, this, false);
     this.weapon.reloadTime = 1.1;
+    this.weapon.weaponRange = 2000;
+    this.weapon.dischargeLifeTime = 3;
+    this.weapon.speed = 350;
+    this.weapon.spread = 0.2;
+    this.weapon.dischargeSize = 0.5;
+    this.weapon.leadTarget = false;
+
+    this.weapon.scale.setTo(0.5, 0.5);
+
+    this.tracking = true;
 }
 
 // data: {speed}
@@ -34,14 +44,10 @@ Shooter.prototype.Spawn = function(x, y, data) {
 }
 
 Shooter.prototype.MoreUpdate = function() {
-    // move towards player
+    this.weapon.update();
 
-    /*this.CheckBounds();
-
-    this.Movement();*/
+    this.rotation = Math.atan2(this.body.velocity.x, -this.body.velocity.y) - Math.PI/2;
 }
-
-Shooter.prototype.Movement = TurnTowardsTarget;
 
 Shooter.prototype.Explode = function(bullet, platform) {
     

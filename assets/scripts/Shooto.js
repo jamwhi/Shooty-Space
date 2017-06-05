@@ -4,12 +4,16 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { preload: preload, 
 
 // Object Pools
 var platforms;
+
 var bulletPool;
 var beamPool;
+
+
 var asteroidPool;
 var squarePool;
 var shooterPool;
 var spawnerPool;
+
 var fuelPool;
 var explosionPool;
 
@@ -26,7 +30,10 @@ var hud;
 var foreground;
 var midground;
 var background;
+
 var enemies;
+var friendlies;
+var playerGroup;
 
 var paused = false;
 
@@ -122,8 +129,12 @@ function create() {
     
     // The player
     friendlies = game.add.group(game.world, "Friendlies");
+    playerGroup = game.add.group(game.world, "PlayerGroup");
     player = new Player(game, game.world.width / 2, game.world.height / 2);
-    friendlies.add(player);
+    friendlies.add(playerGroup);
+    playerGroup.add(player);
+
+    midground.add(friendlies);
 
     // Enemies
     EnemyStart();

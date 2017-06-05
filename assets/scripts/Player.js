@@ -40,7 +40,6 @@ function Player(game, x, y) {
 
     // Weapons
     this.weapon = new Rapidgun(this.game, this, true);
-    this.weapon = null;
 
     /*
     // Energy
@@ -105,6 +104,10 @@ Player.prototype.update = function() {
 
     //this.CheckMouseInput();
 
+    // Weapon
+    if (this.weapon) {
+        this.weapon.update();
+    }
     // Charge shot up
     if (this.chargingShot) {
         this.weapon.KeepChargingShot();

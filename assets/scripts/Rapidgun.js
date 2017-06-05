@@ -16,6 +16,7 @@ function Rapidgun (game, ship, friendlyToPlayer) {
     this.piercing = false;
     this.speed = 750;
     this.spread = 0.3;
+    this.leadTarget = true;
 
     if (friendlyToPlayer) {
         this.targetGroups = enemies;
@@ -26,6 +27,9 @@ function Rapidgun (game, ship, friendlyToPlayer) {
 
 
 Rapidgun.prototype.Trigger = function(target) {
+    var rot = this.leadTarget ? this.LeadTarget(target) : this.GetAngleToTarget(target);
+    rot += this.AddSpread();
+
     var data = {
         damage: this.damage, 
         piercing: this.piercing,
@@ -33,7 +37,7 @@ Rapidgun.prototype.Trigger = function(target) {
         timeAlive: this.dischargeLifeTime,
         targetGroups: this.targetGroups,
         speed: this.speed,
-        rotation: this.LeadTarget(target) + this.AddSpread()
+        rotation: rot
     }
     
     var p = this.GetDischargePoint();

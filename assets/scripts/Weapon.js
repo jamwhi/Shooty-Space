@@ -8,9 +8,8 @@ function Weapon (game, spriteData, ship) {
     this.anchor.set(0.5, 0.5);
 
     this.game = game;
-    this.ship = ship;
     midground.add(this);
-    //ship.addChild(this);
+    ship.addChild(this);
 
     //this.chargeGraphic = this.addChild(new Phaser.Sprite(this.game, 0, 0, 'bullet'));
     //this.chargeGraphic.anchor.setTo(0.5);
@@ -62,7 +61,6 @@ Weapon.prototype.update = function() {
 
     if (paused) return;
 
-    this.position = this.ship.position;
     // Check if the weapon can shoot (has cooled down / reloaded). If so, check for valid targets
     if (this.reloadCurrent <= 0) {
         this.CheckForTargets();
@@ -159,8 +157,8 @@ Weapon.prototype.Fire = function(p, data) {
 }
 
 Weapon.prototype.GetDischargePoint = function() {
-    var x = this.world.x + Math.cos(this.rotation) * this.fireOffset;
-    var y = this.world.y + Math.sin(this.rotation) * this.fireOffset;
+    var x = this.world.x + Math.cos(this.rotation + this.parent.rotation) * this.fireOffset * this.scale.x;
+    var y = this.world.y + Math.sin(this.rotation + this.parent.rotation) * this.fireOffset * this.scale.y;
 
     return {x, y};
 }
