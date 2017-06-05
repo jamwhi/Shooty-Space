@@ -26,6 +26,7 @@ function Weapon (game, spriteData, ship) {
     this.dischargeSize = 15;
     this.dischargeLifeTime = 0.2;
     this.piercing = false;
+    this.targetGroups = enemies;
 
     //this.recoil = -1600;
     //this.piercePower = 0.4;
@@ -95,8 +96,7 @@ Weapon.prototype.CheckForTargets = function() {
     var d;
 
     // Loop through each enemy pool (and each enemy inside that pool) and return the closest enemy
-    enemies.forEach(function (f) {
-    
+    this.targetGroups.forEach(function (f) {
         f.forEachAlive(function (e) {
             if (!closest) {
                 closest = e;

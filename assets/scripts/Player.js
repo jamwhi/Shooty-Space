@@ -9,7 +9,6 @@ function Player(game, x, y) {
     this.anchor.set(0.3, 0.5);
 
     midground.add(this);
-    
 
     // Setup input (arrow keys)
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -40,7 +39,7 @@ function Player(game, x, y) {
     this.slowDistance = 80;
 
     // Weapons
-    this.weapon = new Rapidgun(this.game, this);
+    this.weapon = new Rapidgun(this.game, this, true);
     this.weapon = null;
 
     /*

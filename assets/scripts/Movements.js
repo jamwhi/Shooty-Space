@@ -53,3 +53,8 @@ function ArriveTowardsTarget() {
         this.body.velocity.setMagnitude(max);
     }
 }
+
+// Wanders aimlessly around the screen
+function Wander() {
+    // Wander code
+}

@@ -3,7 +3,7 @@
 Rapidgun.prototype = Object.create(Weapon.prototype);
 Rapidgun.prototype.constructor = Rapidgun;
 
-function Rapidgun (game, ship) {
+function Rapidgun (game, ship, friendlyToPlayer) {
     Weapon.call(this, game, 'turret1', ship);
     this.dischargePool = bulletPool;
     
@@ -16,6 +16,12 @@ function Rapidgun (game, ship) {
     this.piercing = false;
     this.speed = 750;
     this.spread = 0.3;
+
+    if (friendlyToPlayer) {
+        this.targetGroups = enemies;
+    } else {
+        this.targetGroups = friendlies;
+    }
 }
 
 
@@ -25,7 +31,7 @@ Rapidgun.prototype.Trigger = function(target) {
         piercing: this.piercing,
         size: this.dischargeSize,
         timeAlive: this.dischargeLifeTime,
-        targetGroups: enemies,
+        targetGroups: this.targetGroups,
         speed: this.speed,
         rotation: this.LeadTarget(target) + this.AddSpread()
     }
