@@ -83,7 +83,7 @@ function SpawnSquare() {
 }
 
 function SpawnShooter() {
-    shooterPool.create(700, Math.random() * 600, {speed: 100});
+    shooterPool.create(800, Math.random() * 600, {speed: 100});
 }
 
 function EnemyManagerUpdate() {

@@ -3,7 +3,8 @@
 // Requires: speed, maxSpeed, acceleration
 // Moves straight at target at speed, which slowly increases with acceleration
 function MoveTowardsTarget() {
-    if (this.target == null) return;
+    if (this.target == null) 
+        return;
 
 
     if (this.speed < this.maxSpeed) {
@@ -18,7 +19,8 @@ function MoveTowardsTarget() {
 // Requires: maxSpeed, acceleration
 // Turns towards target with acceleration (can create orbiting behaviour)
 function TurnTowardsTarget() {
-    if (this.target == null) return;
+    if (this.target == null) 
+        return;
 
 
     //if (this.speed < this.maxSpeed) {
@@ -36,7 +38,8 @@ function TurnTowardsTarget() {
 // Requires: maxSpeed, acceleration, slowDistance
 // Turns towards target with acceleration and slows down when close and stops at target, i.e. 'arrives' 
 function ArriveTowardsTarget() {
-    if (this.target == null) return;
+    if (this.target == null) 
+        return;
 
 
     var vectorTo = Phaser.Point.subtract(this.target.position, this.position);
@@ -47,6 +50,9 @@ function ArriveTowardsTarget() {
     var max = this.maxSpeed;
     if (d < this.slowDistance) {
         max = this.maxSpeed * d / this.slowDistance;
+        // If max is low enough, just set it to 0
+        if (max < 5) 
+            max = 0;
     }
     
     if (this.body.velocity.getMagnitude() > max) {

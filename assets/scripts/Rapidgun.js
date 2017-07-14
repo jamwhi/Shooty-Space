@@ -9,7 +9,7 @@ function Rapidgun (game, ship, friendlyToPlayer) {
     
     this.fireOffset = 20;
     this.reloadTime = 0.3;
-    this.weaponRange = 250;
+    this.weaponRange = 9000; //250;
     this.damage = 10;
     this.dischargeSize = 0.2;
     this.dischargeLifeTime = 0.5;
@@ -55,6 +55,12 @@ Rapidgun.prototype.LeadTarget = function(target) {
 
     pos.x += target.body.velocity.x * timeTo;
     pos.y += target.body.velocity.y * timeTo;
+	
+	d = pos.distance(this.world);
+	timeTo = d / this.speed;
 
+	pos.x = target.position.x + target.body.velocity.x * timeTo;
+	pos.y = target.position.y + target.body.velocity.y * timeTo;
+	
     return game.physics.arcade.angleBetween(this.world, pos);
 }

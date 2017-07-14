@@ -114,7 +114,7 @@ Player.prototype.update = function() {
     } 
     
     //this.RechargeEnergy();
-
+    
     this.Movement();
 
     this.CheckHitTime();
@@ -213,8 +213,6 @@ function hitWorldBounds(sprite, up, down, left, right) {
         }
     }
 }
-
-
 
 Player.prototype.StartCharge = function() {
     this.chargingShot = true;
