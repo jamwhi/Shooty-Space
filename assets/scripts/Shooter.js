@@ -4,7 +4,7 @@ Shooter.prototype = Object.create(Enemy.prototype);
 Shooter.prototype.constructor = Shooter;
 
 function Shooter (game) {
-    Enemy.call(this, game, 'turret3');
+    Enemy.call(this, game, 'turret2');
 
     this.body.bounce.setTo(1, 1);
     this.body.collideWorldBounds = true;
@@ -22,6 +22,7 @@ function Shooter (game) {
     this.weapon.dischargeSize = 0.5;
     this.weapon.leadTarget = false;
 
+	this.scale.setTo(1.5, 1.5);
     this.weapon.scale.setTo(0.5, 0.5);
 
     this.tracking = true;

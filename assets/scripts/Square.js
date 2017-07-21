@@ -6,16 +6,20 @@ Square.prototype.constructor = Square;
 function Square (game) {
     Enemy.call(this, game, 'square');
 
+	this.body.bounce.setTo(1, 1);
+	this.body.collideWorldBounds = true;
+	
     this.maxHealth = 50;
     this.health = this.maxHealth;
     this.hitDamage = 20;
-    this.maxSpeed = 200;
-    this.acceleration = 5;
+    this.maxSpeed = 250;
+	this.acceleration = 18;
+	this.newOffsetTimer = 1;
 }
 
 // data: {speed}
 Square.prototype.Spawn = function(x, y, data) {
-    if (data.speed == null) data.speed = 200;
+    if (data.speed == null) data.speed = this.maxSpeed;
     
     Enemy.prototype.Spawn.call(this, x, y, data);
 
@@ -25,7 +29,9 @@ Square.prototype.Spawn = function(x, y, data) {
     this.body.angularVelocity = Math.random() * 100 + 200;
     if (Math.random() <= 0.5) this.body.angularVelocity *= -1;
     this.body.velocity.x = -this.speed;
-    this.target = player;
+	this.target = player;
+	this.randomTargetOffset = NewRandomOffset();
+	
     return this;
 }
 

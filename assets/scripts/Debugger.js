@@ -14,11 +14,15 @@ function LoadDebugObjects() {
         }, 
 
         {name: "Square", pool: squarePool, data: {
-                speed: 0
+                speed: 250
             }
         }, 
 
-        {name: "Fuel", pool: fuelPool, data: {}}
+		{name: "Fuel", pool: fuelPool, data: {}},
+		
+		{name: "Shooter", pool: shooterPool, data: {
+			speed: 100
+		}}
     ];
 }
 
@@ -46,11 +50,11 @@ function DebugCreate() {
 
     // Create x y inputs
     stuff += "x: ";
-    stuff += "min<input style='width: 40px;' type='number' value='0' min='0' max='800' id='spawnXmin'>";
-    stuff += "max<input style='width: 40px;' type='number' value='800' min='0' max='800' id='spawnXmax'>";
+    stuff += "min<input style='width: 40px;' type='number' value='0' min='0' max='" + game.width + "' id='spawnXmin'>";
+    stuff += "max<input style='width: 40px;' type='number' value='" + game.width + "' min='0' max='" + game.width + "' id='spawnXmax'>";
     stuff += "</br>y: ";
-    stuff += "min<input style='width: 40px;' type='number' value='0' min='0' max='600' id='spawnYmin'>";
-    stuff += "max<input style='width: 40px;' type='number' value='600' min='0' max='600' id='spawnYmax'>";
+    stuff += "min<input style='width: 40px;' type='number' value='0' min='0' max='" + game.height + "' id='spawnYmin'>";
+    stuff += "max<input style='width: 40px;' type='number' value='" + game.height + "' min='0' max='" + game.height + "' id='spawnYmax'>";
 
     
 

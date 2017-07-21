@@ -8,13 +8,13 @@ function Rapidgun (game, ship, friendlyToPlayer) {
     this.dischargePool = bulletPool;
     
     this.fireOffset = 20;
-    this.reloadTime = 0.3;
-    this.weaponRange = 9000; //250;
+    this.reloadTime = 0.07;
+    this.weaponRange = 450;
     this.damage = 10;
     this.dischargeSize = 0.2;
-    this.dischargeLifeTime = 0.5;
+    this.dischargeLifeTime = 0.6;
     this.piercing = false;
-    this.speed = 750;
+    this.speed = 550;
     this.spread = 0.3;
     this.leadTarget = true;
 

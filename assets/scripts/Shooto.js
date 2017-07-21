@@ -1,6 +1,6 @@
 
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(768, 434, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update, render: render });
 
 // Object Pools
 var platforms;
@@ -187,7 +187,7 @@ function SetupBackground() {
 
 function render() {
 
-
+	// Debug stuff
     /*
     game.debug.text("bullets: " + bulletPool.children.length, 100, 380 );
     game.debug.text("stars: " + asteroidPool.children.length, 100, 400 );

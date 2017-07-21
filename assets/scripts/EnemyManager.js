@@ -1,6 +1,8 @@
 
 
-spawnTimers = [];
+var spawnTimers = [];
+
+var enemiesLeftInWave = 5;
 
 function SetupEnemies() {
     enemies = game.add.group(game.world, "Enemies");
@@ -41,7 +43,8 @@ function SetupTimers() {
     //AddTimer(4, SpawnSquare);
     //AddTimer(10, SpawnAsteroid);
     //SpawnAsteroid();
-    SpawnShooter();
+	//SpawnShooter();
+	SpawnSquare();
 }
 
 
@@ -70,7 +73,7 @@ function SetupPlatforms() {
 }
 
 function SpawnAsteroid() {
-    spawnerPool.create(Math.random() * game.width, Math.random() * game.height, {pool: asteroidPool, data: {
+    spawnerPool.create(Math.random() * (game.width - 10), Math.random() * (game.height - 10), {pool: asteroidPool, data: {
         tier: 1,
         x: Math.random() * 200 - 100, 
         y: Math.random() * 200 - 100
@@ -79,11 +82,11 @@ function SpawnAsteroid() {
 
 
 function SpawnSquare() {
-    squarePool.create(800, Math.random() * 600, {speed: 200});
+    squarePool.create(game.width - 10, Math.random() * (game.height - 10), {});
 }
 
 function SpawnShooter() {
-    shooterPool.create(800, Math.random() * 600, {speed: 100});
+    shooterPool.create(game.width - 10, Math.random() * (game.height - 10), {speed: 100});
 }
 
 function EnemyManagerUpdate() {

@@ -16,7 +16,7 @@ function MoveTowardsTarget() {
     this.body.velocity = vectorTo;
 }
 
-// Requires: maxSpeed, acceleration
+// Requires: maxSpeed, acceleration, newOffsetTimer
 // Turns towards target with acceleration (can create orbiting behaviour)
 function TurnTowardsTarget() {
     if (this.target == null) 
@@ -25,14 +25,27 @@ function TurnTowardsTarget() {
 
     //if (this.speed < this.maxSpeed) {
     //    this.speed += this.acceleration * this.game.time.physicsElapsed;
-    //}
+	//}
+	
+	// Add some randomness to the point being pursued
 
-    var vectorTo = Phaser.Point.subtract(this.target.position, this.position);
+	this.newOffsetTimer -= this.game.time.physicsElapsed;
+
+	if (this.newOffsetTimer <= 0) {
+		this.newOffsetTimer = 1;
+		this.randomTargetOffset = NewRandomOffset();
+	}
+
+    var vectorTo = Phaser.Point.add(Phaser.Point.subtract(this.target.position, this.position), this.randomTargetOffset);
     vectorTo.setMagnitude(this.acceleration);
     this.body.velocity = Phaser.Point.add(this.body.velocity, vectorTo);
     if (this.body.velocity.getMagnitude() > this.maxSpeed) {
         this.body.velocity.setMagnitude(this.maxSpeed);
     }
+}
+
+function NewRandomOffset() {
+	return {x: Math.random() * 120 - 60, y: Math.random() * 120 - 60};
 }
 
 // Requires: maxSpeed, acceleration, slowDistance
