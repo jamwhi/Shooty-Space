@@ -9,6 +9,8 @@ function SetupEnemies() {
     midground.add(enemies);
 }
 
+var Wave1 = [0, 1, 1, 1, 1];
+
 function EnemyStart() {
     
     SetupPlatforms();
@@ -44,7 +46,7 @@ function SetupTimers() {
     //AddTimer(10, SpawnAsteroid);
     //SpawnAsteroid();
 	//SpawnShooter();
-	SpawnSquare();
+	//SpawnSquare();
 }
 
 
@@ -94,11 +96,11 @@ function EnemyManagerUpdate() {
     //CheckEnemyCollisions();
 }
 
-function AddTimer(time, funct) {
+function AddTimer(time, triggerFunction) {
     var newTimer = {
         currentTime: 0,
         triggerTime: time,
-        fire: funct
+        fire: triggerFunction
     };
     spawnTimers.push(newTimer);
 }

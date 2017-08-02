@@ -22,6 +22,7 @@ var cursors;
 
 var score = 0;
 var scoreText;
+var alertText;
 var energyBar;
 var hpBar;
 var fuelBar;
@@ -110,7 +111,6 @@ function create() {
     // HUD
     SetupHUD();
     
-    
     // bullets group
     bulletPool = new Pool(game, Bullet, 6, 'bullets');
     bulletPool.enableBody = true;
@@ -142,9 +142,15 @@ function create() {
 
     if (debugging) {
         DebugCreate();
-    }
+	}
+
+	game.time.events.add(500, StartGame, game);
 }
 
+
+function StartGame() {
+	DisplayAlertText("Wave 1");
+}
 
 function update() {
     //game.physics.arcade.collide(stars, platforms);

@@ -68,7 +68,10 @@ Bar.prototype.update = function() {
 
 function SetupHUD() {
     
-    scoreText = hud.add(new Phaser.Text(game, 16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' }));
+	scoreText = hud.add(new Phaser.Text(game, 16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' }));
+	
+	alertText = hud.add(new Phaser.Text(game, 0, 0, '', { boundsAlignV: "middle", boundsAlignH: "center", fontSize: '64px', fill: '#F00' }));
+	alertText.setTextBounds(0, 0, game.width, game.height);
 
     hpBar = new Bar('hpbar', 20, 60, true);
     //energyBar = new Bar('energybar', 20, 75, false);
@@ -77,7 +80,7 @@ function SetupHUD() {
     fuelBar.SetValue(0);
 
     CreateUpgradeScreen();
-    //ShowUpgradeScreen();
+	//ShowUpgradeScreen();
 }
 
 function UpdateHUD() {
@@ -88,6 +91,24 @@ function UpdateHUD() {
 function UpdateScore(newScore) {
     score = newScore;
     scoreText.text = 'Score: ' + score;
+}
+
+var alertFullText;
+var alertIndex = 0;
+function DisplayAlertText(text) {
+	alertFullText = text;
+	alertText.text = '';
+
+	game.time.events.repeat(150, text.length, NextLetter, game);
+	game.time.events.add(text.length * 150 + 1500, HideAlertText, game);
+}
+
+function NextLetter() {
+	alertText.text += alertFullText[alertIndex++];
+}
+
+function HideAlertText() {
+	game.add.tween(alertText).to( { alpha: 0 }, 1200, "Quart.easeIn", true);
 }
 
 
